@@ -1,0 +1,64 @@
+***************************
+SMART KITCHEN TRACKER 
+***************************
+
+Steps to Build the Project 
+---------------------------
+
+Hardware Requirements:
+-----------------------
+
+	-	Arduino UNO
+	-	Load Cells
+	-	HX711 Load Cell Amplifier 
+	-	HM - 10 BLE Module
+	-	Linkit One HDK
+
+Installation of the Softwares Required
+---------------------------------------
+Step 1: Setting up the Arduino IDE to Program the Arduino UNO and Linkit One
+
+Installing the Arduino IDE SDK
+
+    -	Download and Install Arduino 1.6.5 IDE [Recommeded for LINKIT] from [https://www.arduino.cc/en/Main/Software]
+    -	Start Arduino and open Preferences window.
+    -	Enter http://download.labs.mediatek.com/package_mtk_linkit_index.json into Additional Board Manager URLs field. 
+    -	You can add multiple URLs, separating them with commas.
+    -	Open Boards Manager from Tools > Boards > Board menu and install Linkit One SDK
+    -	Make sure you have installed the boards by finding linkit on Tools > Boards > LinkitOne
+
+PREREQUISITE STEPS:
+-------------------
+
+Step 1: Update the Firmware for the HM-10 BLE Moulde by following link
+
+
+
+Step 2:	Install the Linkit One Drivers using following link
+			
+			http://www.seeedstudio.com/wiki/LinkIt_ONE
+
+Step 3: Update the Firmware v1.1.17 for the Linkit One HDK using following link
+
+			http://www.seeedstudio.com/wiki/LinkIt_ONE
+
+Step 4:	Connect the WiFi/Bluetooth Antenna to the Linkit Board
+
+Sensor-Controller Build 
+-------------------------
+
+Requirements:
+
+	-	Follow the schematic and build the circuit with the LOAD CELL, Amplifier and Arduino UNO 
+	- 	GIT CLONE the Github Repo form following link
+
+	-	Open the (git_repo)/hardware/bleHM10/bleHM10.ino using Arduino IDE
+	-	Select Tools > Boards > Arduino UNO
+	-	Select the COM Port at Tools > Port > (COM PORT)
+	- 	Compile and Upload the code to the Arduino IDE
+
+Linkit-PubNub Build
+--------------------
+
+	-	Open the (git_repo)/linkitble/pubnub_linkit/pubnub_linkit.ino using Arduino IDE
+	-	
