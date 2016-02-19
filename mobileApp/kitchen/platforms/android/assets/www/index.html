@@ -1,49 +1,170 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
-    <head>
-        <!--
-        Customize this policy to fit your own app's needs. For more guidance, see:
-            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-        Some notes:
-            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-                * Enable inline JS: add 'unsafe-inline' to default-src
-        -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
-        <meta name="format-detection" content="telephone=no">
-        <meta name="msapplication-tap-highlight" content="no">
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-        <link rel="stylesheet" type="text/css" href="css/index.css">
-        <title>Hello World</title>
-    </head>
-    <body>
-        <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/>
+    <script src="https://cdn.pubnub.com/pubnub-3.7.18.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+    <script src="js/index.js"></script>
+</head>
+
+<body>
+
+
+<!-- MAIN PAGE-->   
+    <div data-role="page" id="mainpage" >
+        <div data-role="header" >
+            <p align="center"><strong>KITCHEN TRACKER</strong></p>
+        </div>    
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#mainpage" data-icon="home"></a></li>
+                    <li><a href="#settings-page" data-icon="gear"></a></li>
+                    <li><a href="#about" data-icon="info"></a></li>
+                </ul>
+            </div>
+        
+
+        <div data-role="main" class="ui-content">
+            <div class="container" align="center">
+                <svg version="1.1" id="container001" width="100px" height="100px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                     viewBox="0 0 156 164.8" style="enable-background:new 0 0 156 164.8;" xml:space="preserve">
+                    <style type="text/css">
+                        .st0{fill:#FFFFFF;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}
+                    </style>
+                    <polyline class="st0" points="9.8,20.2 13.8,12.6 13.8,157.6 143.8,157.6 143.8,12.6 148.2,20.1"></polyline>
+                    <rect id="item14" x="17" y="121.5" class="st14" width="123.6" height="33.8"></rect>
+                    <rect id="item13" x="17" y="85.5" class="st13" width="123.6" height="33.8"></rect>
+                    <rect id="item12" x="17" y="49.5" class="st12" width="123.6" height="33.8"></rect>
+                    <rect id="item11" x="17" y="13.5" class="st11" width="123.6" height="33.8"></rect>
+                </svg>
+                <div align="center">
+                    <input id="button1" data-role="none" value="Graph" type="button"  onclick="app.graph1Show()"/>
+                    <input id="transactionHistory1" data-role="none" onclick="app.transaction1()" type="button" value="History"/>
+                </div><br>
+                <label>Remaining <a id="itemname1"></a> : <a id="itemquantity1"></a> kgs</label>
+            </div>
+
+            <div class="container" align="center">
+                <svg version="1.1" id="container002" width="100px" height="100px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                     viewBox="0 0 156 164.8" style="enable-background:new 0 0 156 164.8;" xml:space="preserve">
+                    <style type="text/css">
+                        .st0{fill:#FFFFFF;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}
+                    </style>
+                    <polyline class="st0" points="9.8,20.2 13.8,12.6 13.8,157.6 143.8,157.6 143.8,12.6 148.2,20.1"></polyline>
+                    <rect id="item24" x="17" y="121.5" class="st14" width="123.6" height="33.8"></rect>
+                    <rect id="item23" x="17" y="85.5" class="st13" width="123.6" height="33.8"></rect>
+                    <rect id="item22" x="17" y="49.5" class="st12" width="123.6" height="33.8"></rect>
+                    <rect id="item21" x="17" y="13.5" class="st11" width="123.6" height="33.8"></rect>
+                </svg>
+                <div align="center">
+                    <input id="button2" data-role="none" value="Graph" type="button"  onclick="app.graph2Show()"/>
+                    <input id="transactionHistory2" data-role="none" onclick="app.transaction2()" type="button" value="History"/>
+                </div><br>
+                <label>Remaining <a id="itemname2"></a> : <a id="itemquantity2"></a> kgs</label>
             </div>
         </div>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-    </body>
+
+<!-- TRANSACTION HISTORY -->
+        <div data-role="popup" id="transaction" data-overlay-theme="b" data-theme="a" data-dismissible="true"  data-history="false">
+            <div data-role="header" data-theme="a">
+                <h1>HISTORY</h1>
+            </div>
+            <table id="transTable" data-role="table" data-mode="reflow"></table>
+        </div>
+
+<!-- GRAPH POPUPS-->
+        <div data-role="popup" id="graph1" data-overlay-theme="b" data-theme="a" data-dismissible="false"  data-history="false">
+            <div data-role="header" data-theme="b">
+                <a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext"></a>
+                <h2>Graph</h2>
+            </div>
+            <canvas  id="canvas1"></canvas>       
+        </div>
+        <div data-role="popup" id="graph2" data-overlay-theme="b" data-theme="a" data-dismissible="false"  data-history="false">
+            <div data-role="header" data-theme="b">
+                <a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext"></a>
+                <h2>Graph</h2>
+            </div>
+            <canvas  id="canvas2"></canvas>       
+        </div>
+    </div>
+    
+
+
+<!-- SETTINGS PAGE -->  
+    <div data-role="page" id="settings-page">
+        <div data-role="header" data-theme="b">
+            <a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext"></a>
+            <h2>Settings</h2>
+        </div>
+
+        <div data-role="main" class="ui-content">
+            <form>
+                <div class="ui-field-contain">
+                    <label for="Cname">Container Id</label>
+                        <select id="cid" class="opts">
+                            <option selected="selected" value="001">001</option>
+                            <option value="002">002</option>
+                        </select><br/>
+                        <label for="Lname">Label</label>
+                        <input id="cname" type="text" placeholder="item name" name="name"/>
+                        <fieldset class="ui-field-contain">
+                            <label for="threshold">Threshold</label>
+                            <input name="tslider" id="tslider" data-highlight="true" min="0" max="3" step="0.1" value="1.4" type="range"/><br/>
+                            <label for="Expiry">Expiry in months</label>
+                            <input name="eslider" id="eslider" data-highlight="true" min="1" max="24" value="4" type="range"/>
+                        </fieldset>
+                        <div align="center">
+                            <input  value="Submit" data-inline="true" type="button" onclick="app.registeritem()"></input>
+                            <input  value="Reset" data-inline="true" type="reset" onclick="app.resetitem()"/>
+                        </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+
+
+
+<!-- ABOUT PAGE -->     
+    <div data-role="page" id="about">
+        <div data-role="header" data-theme="b">
+            <a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext"></a>
+            <h2>About</h2>
+        </div>
+
+        <div data-role="main" class="ui-content">
+            <p>Kitchen Tracker solves the most common dealer frustrations by providing a powerful mobile solution for tracking your shipments automatically, just a finger tap away. Imagine no more spreadsheets, lost orders, missing parts, or missed deadlines.</p>
+            <style type="text/css">
+                /* basic positioning */
+                .legend { list-style: none; }
+                .legend li { float: left; margin-right: 10px; }
+                .legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; }
+                /* your colors */
+                .legend .red { background-color: #e12727; }
+                .legend .orange { background-color: #fec057; }
+                .legend .lightorange { background-color: #ffdab9; }
+                .legend .green { background-color: #39B54A; }
+                .legend .black { background-color: #000000; }
+                .legend .consumption{ background-color:#DCB400  }
+                .legend .refill{ background-color:#0000FF  }
+            </style>
+            <p>Container/Graph Indicators</p>
+             <ul class="legend">
+                <li><span class="red"></span> Expired</li><br>
+                <li><span class="orange"></span> Partially Filled</li><br>
+                <li><span class="lightorange"></span> Below Critical </li><br>
+                <li><span class="green"></span> Full</li><br>
+                <li><span class="black"></span> Not Registered</li><br>
+                <li><span class="consumption"></span> Consumed</li><br>
+                <li><span class="refill"></span> Refilled</li><br>
+            </ul>
+            
+        </div>
+    </div>
+</body>
 </html>

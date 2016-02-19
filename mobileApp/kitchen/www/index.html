@@ -8,7 +8,7 @@
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/index.js"></script>
 </head>
 
 <body>
@@ -17,8 +17,7 @@
 <!-- MAIN PAGE-->   
     <div data-role="page" id="mainpage" >
         <div data-role="header" >
-            <p align="center">Kitchen Tracker</p>
-
+            <p align="center"><strong>KITCHEN TRACKER</strong></p>
         </div>    
             <div data-role="navbar">
                 <ul>
@@ -46,7 +45,7 @@
                     <input id="button1" data-role="none" value="Graph" type="button"  onclick="app.graph1Show()"/>
                     <input id="transactionHistory1" data-role="none" onclick="app.transaction1()" type="button" value="History"/>
                 </div><br>
-                <label>Remaining <a id="itemname1"></a> : <a id="itemquantity1"></a> kg</label>
+                <label>Remaining <a id="itemname1"></a> : <a id="itemquantity1"></a> kgs</label>
             </div>
 
             <div class="container" align="center">
@@ -65,7 +64,7 @@
                     <input id="button2" data-role="none" value="Graph" type="button"  onclick="app.graph2Show()"/>
                     <input id="transactionHistory2" data-role="none" onclick="app.transaction2()" type="button" value="History"/>
                 </div><br>
-                <label>Remaining <a id="itemname2"></a> : <a id="itemquantity2"></a> kg</label>
+                <label>Remaining <a id="itemname2"></a> : <a id="itemquantity2"></a> kgs</label>
             </div>
         </div>
 
@@ -78,14 +77,20 @@
         </div>
 
 <!-- GRAPH POPUPS-->
-        <div data-role="popup" id="graph" data-overlay-theme="b" data-theme="a" data-dismissible="false"  data-history="false">
+        <div data-role="popup" id="graph1" data-overlay-theme="b" data-theme="a" data-dismissible="false"  data-history="false">
             <div data-role="header" data-theme="b">
                 <a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext"></a>
                 <h2>Graph</h2>
             </div>
             <canvas  id="canvas1"></canvas>       
         </div>
-        
+        <div data-role="popup" id="graph2" data-overlay-theme="b" data-theme="a" data-dismissible="false"  data-history="false">
+            <div data-role="header" data-theme="b">
+                <a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext"></a>
+                <h2>Graph</h2>
+            </div>
+            <canvas  id="canvas2"></canvas>       
+        </div>
     </div>
     
 
@@ -106,7 +111,7 @@
                             <option value="002">002</option>
                         </select><br/>
                         <label for="Lname">Label</label>
-                        <input id="cname" type="text" value="name" name="name"/>
+                        <input id="cname" type="text" placeholder="item name" name="name"/>
                         <fieldset class="ui-field-contain">
                             <label for="threshold">Threshold</label>
                             <input name="tslider" id="tslider" data-highlight="true" min="0" max="3" step="0.1" value="1.4" type="range"/><br/>
@@ -147,7 +152,6 @@
                 .legend .black { background-color: #000000; }
                 .legend .consumption{ background-color:#DCB400  }
                 .legend .refill{ background-color:#0000FF  }
-
             </style>
             <p>Container/Graph Indicators</p>
              <ul class="legend">
