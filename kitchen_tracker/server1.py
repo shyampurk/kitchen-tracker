@@ -49,13 +49,13 @@ g_perdayRefill = dict()
 REFILL_DATE = 0
 REFILL_QTY = 1
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	ConfigSectionMap
+Function Name 		:	ConfigSectionMap
 Description		:	Parsing the Config File and Extracting the data and returning it
 Parameters 		:	section - section to be parserd
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
@@ -84,14 +84,14 @@ g_idadf = 0
 
 DB_URL = 'jdbc:db2://dashdb-entry-yp-dal09-07.services.dal.bluemix.net:50000/BLUDB:user=' + DB_USER_NAME + ';password=' + DB_PASSWORD
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	init
+Function Name 		:	init
 Description		:	Initalize the pubnub keys and Starts Subscribing from the 
 					kitchenDevice-resp and kitchenApp-req channels
 Parameters 		:	None
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def init():
 	#Pubnub Initialization
 	global pubnub 
@@ -99,14 +99,14 @@ def init():
 	pubnub.subscribe(channels='kitchenDevice-resp', callback=callback, error=callback, reconnect=reconnect, disconnect=disconnect)
 	pubnub.subscribe(channels='kitchenApp-req', callback=appcallback, error=appcallback, reconnect=reconnect, disconnect=disconnect)
 	
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	dB_init
+Function Name 		:	dB_init
 Description		:	Initalize the Database and establishing the connection between the 
 					database and the script using the jdbc driver
 Parameters 		:	None
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def dB_init():
 	global DATABASE_TABLE_NAME,g_idadb,g_idadf
 	l_dbtry = 0
@@ -121,14 +121,14 @@ def dB_init():
 			l_dbtry += 1
 			logging.warning(error)
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	defaultLoader
+Function Name 		:	defaultLoader
 Description		:	Initialize the container Status, loads the container and updates 
 					the historical graph
 Parameters 		:	None
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def defaultLoader(p_containerid):
 	#KEY = ContainerID VALE =  Present Weight, Previous Weight, Total Refill, Total Consumed, Flag, Start Date 
 	g_containerStatus.setdefault(p_containerid, [0.00,0.00,0.00,0.00,False,0])
@@ -141,9 +141,9 @@ def defaultLoader(p_containerid):
 	g_perdayConsumption.setdefault(p_containerid, [datetime.datetime.now().date(),0])
 	#Container Message
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	appSetting
+Function Name 		:	appSetting
 Description		:	Handles the Request sent from an app and register the container settings
 Parameters 		:	p_requester - Request sent from APP
 					p_containerid - Respective Container ID
@@ -151,7 +151,7 @@ Parameters 		:	p_requester - Request sent from APP
 					p_expiryInMonths - Register the expiry
 					p_criticallevel - Register the critical level of the container
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def appSetting(p_requester,p_containerid,p_containerlabel,p_expiryInMonths,p_criticallevel):
 	if(p_requester == "APP"):
 		# Container Label, Expiry in Months, Critical Level, End Date
@@ -163,14 +163,14 @@ def appSetting(p_requester,p_containerid,p_containerlabel,p_expiryInMonths,p_cri
 	else:
 		pass
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	appReset
+Function Name 		:	appReset
 Description		:	Handles the Request sent from an app and reset the container settings
 Parameters 		:	p_requester - Request sent from APP
 					p_containerid - Respective Container ID
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def appReset(p_requester,p_containerid):
 	if(p_requester == "APP"):
 		if(g_containerSettings.has_key(p_containerid)):
@@ -180,9 +180,9 @@ def appReset(p_requester,p_containerid):
 	else:
 		pass
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	dataBaseUpload
+Function Name 		:	dataBaseUpload
 Description		:	Upload the Refill/Consumed Status and Quantity to the DB
 Parameters 		:	p_todayDate - Respective Date
 					p_containerid - Respective Container ID
@@ -191,7 +191,7 @@ Parameters 		:	p_todayDate - Respective Date
 						1 - Consumed
 					p_quantity - Present Quantity  to be uploaded to DB
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def dataBaseUpload(p_todayDate,p_containerid,p_status,p_quantity):
 	l_checkData_length = 0
 	l_time = datetime.datetime.now().strftime('%H:%M:%S')
@@ -210,15 +210,15 @@ def dataBaseUpload(p_todayDate,p_containerid,p_status,p_quantity):
 		update_query = "UPDATE DASH5803.HOME1 SET TIME = '"+str(l_time)+"', QUANTITY = '"+str(p_quantity)+"' WHERE DATES='" + str(p_todayDate) +"' AND STATUS ='"+str(p_status)+"' AND SCALE_ID = '"+p_containerid+"'"
 		l_update = 	g_idadb.ida_query(update_query)
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	containerWeight
+Function Name 		:	containerWeight
 Description		:	Once the device responses the present weight the server handles the 
 					data and evaluvates the container is refilled / consumed
 Parameters 		:	p_containerid - Container ID which is updated
 					p_weight - Present Weight of the respective container
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def containerWeight(p_containerid,p_weight):
 	global DATABASE_TABLE_NAME,g_idadb,g_idadf
 	g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] =  p_weight
@@ -274,15 +274,15 @@ def containerWeight(p_containerid,p_weight):
 		pubnub.publish(channel="kitchenApp-resp", message={g_containerSettings[p_containerid][SETTINGS_LABEL]:[p_containerid,p_weight,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],50,0]})
 		g_containerMessage[g_containerSettings[p_containerid][SETTINGS_LABEL]] = [p_containerid,p_weight,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],50,0]
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	appHistoricalGraph
+Function Name 		:	appHistoricalGraph
 Description		:	Requests the db for the past history with timespan and updates the 
 					data to the app
 Parameters 		:	p_containerid - Respective contianer
 					p_timeSpan - Time Span to request the dB for the data 
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def appHistoricalGraph(p_containerid,p_timeSpan):
 	global DATABASE_TABLE_NAME,g_idadf, g_idadb
 	dB_init()
@@ -329,14 +329,14 @@ def appHistoricalGraph(p_containerid,p_timeSpan):
 	#deleting the history 
 	del l_databaseTableData,l_refill_history,l_consumption_history
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	appUpdate
+Function Name 		:	appUpdate
 Description		:	Once the app is loaded, app request for the update. On request the 
 					server responds with the current status.
 Parameters 		:	p_requester - Request sent from APP
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def appUpdate(p_requester):
 	if p_requester == "APP":
 		#Initial Data to be updated with the app
@@ -348,28 +348,28 @@ def appUpdate(p_requester):
 	else:
 		pass
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	callback
+Function Name 		:	callback
 Description		:	Waits for the message from the kitchenDevice-resp channel
 Parameters 		:	message - Sensor Status sent from the hardware
 					channel - channel for the callback
 	
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def callback(message, channel):
 	if(message.has_key("containerID") and message.has_key("weight")):
 		containerWeight(message["containerID"],message["weight"])
 	else:
 		pass
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	appcallback
+Function Name 		:	appcallback
 Description		:	Waits for the Request sent from the APP 
 Parameters 		:	message - Request sent from the app
 					channel - channel for the appcallback
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def appcallback(message, channel):
 	if(message.has_key("requester") and message.has_key("requestType")):
 		if(message["requestType"] == 0):
@@ -383,34 +383,34 @@ def appcallback(message, channel):
 	else:
 		pass
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	error
+Function Name 		:	error
 Description		:	If error in the channel, prints the error
 Parameters 		:	message - error message
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def error(message):
 	pass
     # logging.debug("ERROR : " + str(message))
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	reconnect
+Function Name 		:	reconnect
 Description		:	Responds if server connects with pubnub
 Parameters 		:	message
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def reconnect(message):
     logging.info("RECONNECTED")
 
-'''****************************************************************************************
+'''******************************************************************************************************************
 
-Function Name 	:	disconnect
+Function Name 		:	disconnect
 Description		:	Responds if server disconnects from pubnub
 Parameters 		:	message
 
-****************************************************************************************'''
+*******************************************************************************************************************'''
 def disconnect(message):
     logging.info("DISCONNECTED")
 	
