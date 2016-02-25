@@ -54,7 +54,7 @@ REFILL_QTY = 1
 
 '''****************************************************************************************
 
-Function Name 	:	ConfigSectionMap
+Function Name 		:	ConfigSectionMap
 Description		:	Parsing the Config File and Extracting the data and returning it
 Parameters 		:	section - section to be parserd
 
@@ -86,7 +86,7 @@ DB_PORT = ConfigSectionMap("database")['port']
 
 '''****************************************************************************************
 
-Function Name 	:	init
+Function Name 		:	init
 Description		:	Initalize the pubnub keys and Starts Subscribing from the 
 					kitchenDevice-resp and kitchenApp-req channels
 Parameters 		:	None
@@ -101,9 +101,9 @@ def init():
 	
 '''****************************************************************************************
 
-Function Name 	:	dB_init
+Function Name 		:	dB_init
 Description		:	Initalize the Database and establishing the connection between the 
-					database and the script using the jdbc driver
+					database and the kitchen-tracker
 Parameters 		:	None
 
 ****************************************************************************************'''
@@ -127,7 +127,7 @@ def dB_init():
 
 '''****************************************************************************************
 
-Function Name 	:	defaultLoader
+Function Name 		:	defaultLoader
 Description		:	Initialize the container Status, loads the container and updates 
 					the historical graph
 Parameters 		:	None
@@ -169,7 +169,7 @@ def appSetting(p_requester,p_containerid,p_containerlabel,p_expiryInMonths,p_cri
 
 '''****************************************************************************************
 
-Function Name 	:	appReset
+Function Name 		:	appReset
 Description		:	Handles the Request sent from an app and reset the container settings
 Parameters 		:	p_requester - Request sent from APP
 					p_containerid - Respective Container ID
@@ -186,7 +186,7 @@ def appReset(p_requester,p_containerid):
 
 '''****************************************************************************************
 
-Function Name 	:	containerWeight
+Function Name 		:	containerWeight
 Description		:	Once the device responses the present weight the server handles the 
 					data and evaluvates the container is refilled / consumed
 Parameters 		:	p_containerid - Container ID which is updated
@@ -251,7 +251,7 @@ def containerWeight(p_containerid,p_weight):
 
 '''****************************************************************************************
 
-Function Name 	:	dataBaseUpload
+Function Name 		:	dataBaseUpload
 Description		:	Upload the Refill/Consumed Status and Quantity to the DB
 Parameters 		:	p_todayDate - Respective Date
 					p_containerid - Respective Container ID
@@ -278,7 +278,7 @@ def dataBaseUpload(p_todayDate,p_containerid,p_status,p_quantity):
 
 '''****************************************************************************************
 
-Function Name 	:	appHistoricalGraph
+Function Name 		:	appHistoricalGraph
 Description		:	Requests the db for the past history with timespan and updates the 
 					data to the app
 Parameters 		:	p_containerid - Respective contianer
@@ -324,7 +324,7 @@ def appHistoricalGraph(p_containerid,p_timeSpan):
 
 '''****************************************************************************************
 
-Function Name 	:	appUpdate
+Function Name 		:	appUpdate
 Description		:	Once the app is loaded, app request for the update. On request the 
 					server responds with the current status.
 Parameters 		:	p_requester - Request sent from APP
@@ -343,7 +343,7 @@ def appUpdate(p_requester):
 
 '''****************************************************************************************
 
-Function Name 	:	callback
+Function Name 		:	callback
 Description		:	Waits for the message from the kitchenDevice-resp channel
 Parameters 		:	message - Sensor Status sent from the hardware
 					channel - channel for the callback
@@ -356,8 +356,8 @@ def callback(message, channel):
 		pass
 
 '''****************************************************************************************
-
-Function Name 	:	appcallback
+	
+Function Name 		:	appcallback
 Description		:	Waits for the Request sent from the APP 
 Parameters 		:	message - Request sent from the app
 					channel - channel for the appcallback
@@ -378,7 +378,7 @@ def appcallback(message, channel):
 
 '''****************************************************************************************
 
-Function Name 	:	error
+Function Name 		:	error
 Description		:	If error in the channel, prints the error
 Parameters 		:	message - error message
 
@@ -389,7 +389,7 @@ def error(message):
 
 '''****************************************************************************************
 
-Function Name 	:	reconnect
+Function Name 		:	reconnect
 Description		:	Responds if server connects with pubnub
 Parameters 		:	message
 
@@ -399,7 +399,7 @@ def reconnect(message):
 
 '''****************************************************************************************
 
-Function Name 	:	disconnect
+Function Name 		:	disconnect
 Description		:	Responds if server disconnects from pubnub
 Parameters 		:	message
 
