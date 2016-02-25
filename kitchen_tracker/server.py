@@ -31,7 +31,7 @@ SETTINGS_EXPIRY = 1
 SETTINGS_CRITICAL_LEVEL = 2
 SETTINGS_DATE = 3
 
-#KEY = ContainerID VALE =  Present Weight, Previous Weight, Total Refill, Total Consumed, Flag, Start Date 
+#KEY = ContainerID VALE =  Present Weight, Previous Weight, Total Refill, Total Consumed, Start Date, Expiry on days
 g_containerStatus = dict()
 STATUS_PRESENT_WEIGHT = 0
 STATUS_PREVIOUS_WEIGHT = 1
@@ -181,8 +181,6 @@ def appSetting(p_requester,p_containerid,p_containerlabel,p_expiryInMonths,p_cri
 			defaultLoader(p_containerid)
 		else:
 			pubnub.publish(channel="kitchenApp-resp", message={"warning":"ID/Name is already registered"})
-	else:
-		pass
 
 '''****************************************************************************************
 
@@ -197,9 +195,7 @@ def appReset(p_requester,p_containerid):
 		if(g_containerSettings.has_key(p_containerid)):
 			del g_containerMessage[g_containerSettings[p_containerid][SETTINGS_LABEL]],g_containerSettings[p_containerid]
 		else:
-			pass
-	else:
-		pass
+			logging.warning("Container ID has not been registered")
 
 '''****************************************************************************************
 
@@ -285,7 +281,7 @@ def dataBaseUpload(p_todayDate,p_containerid,p_status,p_quantity):
 	global DATABASE_TABLE_NAME
 
 	l_checkData_length = dict()
-	
+
 	#Connecting to the database
 	l_connection  = dB_init()
 	if(l_connection == None):
@@ -402,9 +398,7 @@ def appUpdate(p_requester):
 		if(len(g_containerSettings) > 0):
 			pubnub.publish(channel="kitchenApp-resp", message=g_containerMessage)
 		else:
-			pass
-	else:
-		pass
+			logging.warning("Containers are not registered")
 
 '''****************************************************************************************
 
@@ -418,7 +412,7 @@ def callback(message, channel):
 	if(message.has_key("containerID") and message.has_key("weight")):
 		containerWeight(message["containerID"],message["weight"])
 	else:
-		pass
+		logging.warning("Invalid details received on Hardware response")
 
 '''****************************************************************************************
 	
@@ -439,7 +433,7 @@ def appcallback(message, channel):
 		elif(message["requestType"] == 3):
 			appUpdate(message["requester"])
 	else:
-		pass
+		logging.warning("Invalid details received on APP Request")
 
 '''****************************************************************************************
 
