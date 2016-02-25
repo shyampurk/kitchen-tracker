@@ -20,6 +20,8 @@ Config.read(config_file)
 logging.basicConfig(filename='logger.log',level=logging.DEBUG)
 #CONSTANTS 
 TIMESPAN_FOR_HISTORY = 7
+REFILL_STATUS = 0
+CONSUMPTION_STATUS = 1
 
 #DATA STRUCTURES
 #KEY = ContainerID VALE =  Label,Expiry in Months, Critical Level, End Date 
@@ -35,8 +37,8 @@ STATUS_PRESENT_WEIGHT = 0
 STATUS_PREVIOUS_WEIGHT = 1
 STATUS_TOTAL_REFILL = 2
 STATUS_TOTAL_CONSUMED = 3
-STATUS_FLAG = 4
-STATUS_DATE = 5 
+STATUS_DATE = 4
+EXPIRY_IN_DAYS = 5
 
 #KEY = Label VALUE =  Container ID, Present Weight, Critical Level, Expiry in Days, Status(Refill/Consumed)
 g_containerMessage = dict()
@@ -76,6 +78,7 @@ PUB_KEY = ConfigSectionMap("pubnub_init")['pub_key']
 SUB_KEY = ConfigSectionMap("pubnub_init")['sub_key']
 
 #Database Related Variables and Lists 
+DB_SCHEMA = ConfigSectionMap("database")['db_schema'] 
 DB_HOST = ConfigSectionMap("database")['db_host']
 DB_NAME = ConfigSectionMap("database")['db_name']
 DATABASE_TABLE_NAME = ConfigSectionMap("database")['table_name']
@@ -119,20 +122,23 @@ def dB_init():
 			        service = vcap_services['dashDB'][0]
 			        credentials = service["credentials"]
 			        url = 'DATABASE=%s;uid=%s;pwd=%s;hostname=%s;port=%s;' % ( credentials["db"],credentials["username"],credentials["password"],credentials["host"],credentials["port"])
-			        print "VCAP_SERVICES" + url
+			        
 			    else:
 			        hasdashDB = False
 			else:
 			    hasVcap = False
 			    url = 'DATABASE=%s;uid=%s;pwd=%s;hostname=%s;port=%s;' % (DB_NAME,DB_USER_NAME,DB_PASSWORD,DB_HOST,DB_PORT)
-			    print "CONFIG" + url
+			    
 			connection = ibm_db.connect(url, '', '')
 			if (active(connection)):
 				return connection
 		
 		except Exception as error:
 			logging.debug("dataBase connection_ERROR : " + str(error))
-			dbtry+=1	
+			dbtry+=1
+	
+	return None	
+
 '''****************************************************************************************
 
 Function Name 		:	defaultLoader
@@ -143,15 +149,18 @@ Parameters 		:	None
 ****************************************************************************************'''
 def defaultLoader(p_containerid):
 	#KEY = ContainerID VALE =  Present Weight, Previous Weight, Total Refill, Total Consumed, Flag, Start Date 
-	g_containerStatus.setdefault(p_containerid, [0.00,0.00,0.00,0.00,False,0])
+	g_containerStatus.setdefault(p_containerid, [0.00,0.00,0.00,0.00,0,0])
+	
 	#Inital Update for the APP for the Empty Container and Setting UP 
-	containerWeight(p_containerid,0.00)
+	pubnub.publish(channel="kitchenApp-resp", message={g_containerSettings[p_containerid][SETTINGS_LABEL]:[p_containerid,0.00,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],2,0],"warning":"!!Registration Success!!"})
+	g_containerMessage.setdefault(g_containerSettings[p_containerid][SETTINGS_LABEL],[p_containerid,0.00,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],2,0])
+	
 	#Initial Query for the History and Graph
 	appHistoricalGraph(p_containerid,TIMESPAN_FOR_HISTORY)
+	
 	#Loading the Default Values 
 	g_perdayRefill.setdefault(p_containerid, [datetime.datetime.now().date(),0.00])
 	g_perdayConsumption.setdefault(p_containerid, [datetime.datetime.now().date(),0])
-	#Container Message
 
 '''****************************************************************************************
 
@@ -194,6 +203,26 @@ def appReset(p_requester,p_containerid):
 
 '''****************************************************************************************
 
+Function Name 		:	updateCurrentStatus
+Description		:	Updates the Refill/Consumed Data to the Database
+Parameters 		:	p_currentDate - Present date uploaded on DB
+					p_containerid - Container ID which should be updated
+					p_status - Refill / Consumed
+					p_weight - Current Weight to be uploaded to the database
+
+****************************************************************************************'''
+def updateCurrentStatus(p_currentDate,p_containerid,p_status,p_weight):
+	#Uploads the status data to the DB
+	if(p_status == REFILL_STATUS):
+		dataBaseUpload(p_currentDate,p_containerid,p_status,p_weight)
+		logging.info("Data Uploaded on Refill") 
+	else:
+		dataBaseUpload(p_currentDate,p_containerid,p_status,p_weight)
+		logging.info("Data Uploaded on Consumption") 
+
+
+'''****************************************************************************************
+
 Function Name 		:	containerWeight
 Description		:	Once the device responses the present weight the server handles the 
 					data and evaluvates the container is refilled / consumed
@@ -204,58 +233,45 @@ Parameters 		:	p_containerid - Container ID which is updated
 def containerWeight(p_containerid,p_weight):
 	global DATABASE_TABLE_NAME
 	g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] =  p_weight
-	if(g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] != g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT]):
-		dB_init()
-		l_todayDate = datetime.datetime.now().date()
-		del g_containerMessage["warning"]
-		if(g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] > g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT]):
-			if(g_perdayRefill[p_containerid][REFILL_DATE] != l_todayDate):
-				del g_perdayRefill[p_containerid]
-				g_perdayRefill.setdefault(p_containerid, [l_todayDate,0.00])
-			# Calculate and Update the Per day Refill Value = Per Day Total Refill + current refill
-			g_perdayRefill[p_containerid][REFILL_QTY] = g_perdayRefill[p_containerid][REFILL_QTY] + (g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT])
-			# Calculate and Update the Total Refill Value  = Total refill + current refill 
-			g_containerStatus[p_containerid][STATUS_TOTAL_REFILL] = g_containerStatus[p_containerid][STATUS_TOTAL_REFILL] + (g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT])
-			g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] = g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT]
-			g_containerStatus[p_containerid][STATUS_DATE] = datetime.datetime.today()
-			g_containerStatus[p_containerid][STATUS_FLAG] = True
-			if(g_containerSettings.has_key(p_containerid)):
-				# Weight, Critical Level, Expiry in Days, Refill/Consumed
-				g_containerSettings[p_containerid][SETTINGS_DATE] = g_containerStatus[p_containerid][STATUS_DATE] + relativedelta(months=+g_containerSettings[p_containerid][SETTINGS_EXPIRY])
-				l_expiryInDays =  g_containerSettings[p_containerid][SETTINGS_DATE] - g_containerStatus[p_containerid][STATUS_DATE]
-				g_containerMessage[g_containerSettings[p_containerid][SETTINGS_LABEL]] = [p_containerid,p_weight,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],l_expiryInDays.days,0]
-				pubnub.publish(channel="kitchenApp-resp", message=g_containerMessage)
-				#Upload the data to the DB
-				dataBaseUpload(l_todayDate,p_containerid,1,g_perdayRefill[p_containerid][REFILL_QTY])
-				logging.info("Data Uploaded on Refill") 
-		elif(g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] < g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT]):
-			if(g_perdayConsumption[p_containerid][CONSUM_DATE] != l_todayDate):
-				del g_perdayConsumption[p_containerid]
-				g_perdayConsumption.setdefault(p_containerid, [l_todayDate,0])
-			# Calculate and Update the Per day Consumption Value = Consumption + current Consumption
-			g_perdayConsumption[p_containerid][CONSUM_QTY] = g_perdayConsumption[p_containerid][CONSUM_QTY] + (g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT])
-			# Calculate and Update the Total Consumption Value = Consumption + current Consumption
-			g_containerStatus[p_containerid][STATUS_TOTAL_CONSUMED] = g_containerStatus[p_containerid][STATUS_TOTAL_CONSUMED] + (g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT])
-			g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] = g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT]
-			# Avoids Updating the Refill Date for Expiry Calculation
-			if(g_containerStatus[p_containerid][STATUS_FLAG]==False):
-				g_containerStatus[p_containerid][STATUS_DATE] = datetime.datetime.today()
-				g_containerStatus[p_containerid][STATUS_FLAG] = True
-			if(g_containerSettings.has_key(p_containerid)):
-				if(g_containerSettings[p_containerid][SETTINGS_DATE] == 0):
-					g_containerSettings[p_containerid][SETTINGS_DATE] = g_containerStatus[p_containerid][STATUS_DATE] + relativedelta(months=+g_containerSettings[p_containerid][SETTINGS_EXPIRY])
-				# Weight, Critical Level, Expiry in Days, Refill/Consumed
-				l_expiryInDays =  g_containerSettings[p_containerid][SETTINGS_DATE] - g_containerStatus[p_containerid][STATUS_DATE]
-				g_containerMessage[g_containerSettings[p_containerid][SETTINGS_LABEL]] = [p_containerid,p_weight,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],l_expiryInDays.days,1]
-				pubnub.publish(channel="kitchenApp-resp", message=g_containerMessage)
-				#Upload the data to the DB
-				dataBaseUpload(l_todayDate,p_containerid,1,g_perdayConsumption[p_containerid][CONSUM_QTY])
-				logging.info("Data Uploaded on Consumption")
-		else:
-			pass			
+	l_todayDate = datetime.datetime.now().date()
+	if(g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] > g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT]):
+		if(g_perdayRefill[p_containerid][REFILL_DATE] != l_todayDate):
+			del g_perdayRefill[p_containerid]
+			g_perdayRefill.setdefault(p_containerid, [l_todayDate,0.00])
+
+		# Calculate and Update the Per day Refill Value = Per Day Total Refill + current refill
+		g_perdayRefill[p_containerid][REFILL_QTY] = g_perdayRefill[p_containerid][REFILL_QTY] + (g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT])
+
+		# Calculate and Update the Total Refill Value  = Total refill + current refill 
+		g_containerStatus[p_containerid][STATUS_TOTAL_REFILL] = g_containerStatus[p_containerid][STATUS_TOTAL_REFILL] + (g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT])
+		g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] = g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT]
+		g_containerStatus[p_containerid][STATUS_DATE] = datetime.datetime.today()
+		
+		if(g_containerSettings.has_key(p_containerid)):
+			# Calculates for expiry date in days
+			g_containerSettings[p_containerid][SETTINGS_DATE] = g_containerStatus[p_containerid][STATUS_DATE] + relativedelta(months=+g_containerSettings[p_containerid][SETTINGS_EXPIRY])
+			g_containerStatus[p_containerid][EXPIRY_IN_DAYS] =  g_containerSettings[p_containerid][SETTINGS_DATE] - g_containerStatus[p_containerid][STATUS_DATE]
+			g_containerStatus[p_containerid][EXPIRY_IN_DAYS] = g_containerStatus[p_containerid][EXPIRY_IN_DAYS].days			
+			
+			# Weight, Critical Level, Expiry in Days, Refill/Consumed
+			g_containerMessage[g_containerSettings[p_containerid][SETTINGS_LABEL]] = [p_containerid,p_weight,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],g_containerStatus[p_containerid][EXPIRY_IN_DAYS],REFILL_STATUS]
+			pubnub.publish(channel="kitchenApp-resp", message=g_containerMessage)
+			updateCurrentStatus(l_todayDate,p_containerid,REFILL_STATUS,g_perdayRefill[p_containerid][REFILL_QTY])
 	else:
-		pubnub.publish(channel="kitchenApp-resp", message={g_containerSettings[p_containerid][SETTINGS_LABEL]:[p_containerid,p_weight,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],50,0],"warning":"!!Registration Success!!"})
-		g_containerMessage[g_containerSettings[p_containerid][SETTINGS_LABEL]] = [p_containerid,p_weight,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],50,0]
+		if(g_perdayConsumption[p_containerid][CONSUM_DATE] != l_todayDate):
+			del g_perdayConsumption[p_containerid]
+			g_perdayConsumption.setdefault(p_containerid, [l_todayDate,0])
+		
+		# Calculate and Update the Per day Consumption Value = Consumption + current Consumption
+		g_perdayConsumption[p_containerid][CONSUM_QTY] = g_perdayConsumption[p_containerid][CONSUM_QTY] + (g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT])
+		
+		# Calculate and Update the Total Consumption Value = Consumption + current Consumption
+		g_containerStatus[p_containerid][STATUS_TOTAL_CONSUMED] = g_containerStatus[p_containerid][STATUS_TOTAL_CONSUMED] + (g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT])
+		g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] = g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT]
+		if(g_containerSettings.has_key(p_containerid)):
+			g_containerMessage[g_containerSettings[p_containerid][SETTINGS_LABEL]] = [p_containerid,p_weight,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],g_containerStatus[p_containerid][EXPIRY_IN_DAYS],CONSUMPTION_STATUS]
+			pubnub.publish(channel="kitchenApp-resp", message=g_containerMessage)
+			updateCurrentStatus(l_todayDate,p_containerid,CONSUMPTION_STATUS,g_perdayConsumption[p_containerid][CONSUM_QTY])
 
 '''****************************************************************************************
 
@@ -271,11 +287,18 @@ Parameters 		:	p_todayDate - Respective Date
 ****************************************************************************************'''
 def dataBaseUpload(p_todayDate,p_containerid,p_status,p_quantity):
 	global DATABASE_TABLE_NAME
+
 	l_checkData_length = dict()
+
 	l_connection  = dB_init()
+	if(l_connection == None):
+		return
+
+	#Current Time upload on the database
 	l_time = datetime.datetime.now().strftime('%H:%M:%S')
-	
-	l_date_query = "SELECT COUNT(*) FROM DASH5803."+ DATABASE_TABLE_NAME +" WHERE DATES = '"+str(p_todayDate)+"'AND STATUS = '"+str(p_status)+"' AND SCALE_ID = '"+p_containerid+"'"
+	p_todayDate = p_todayDate.strftime('%Y-%m-%d')
+
+	l_date_query = "SELECT COUNT(*) FROM "+DB_SCHEMA+"."+DATABASE_TABLE_NAME+" WHERE DATES = '"+str(p_todayDate)+"'AND STATUS = '"+str(p_status)+"' AND SCALE_ID = '"+p_containerid+"'"
 	try:
 		l_db_statement = ibm_db.exec_immediate(l_connection, l_date_query)
 		
@@ -285,18 +308,20 @@ def dataBaseUpload(p_todayDate,p_containerid,p_status,p_quantity):
 
 
 	if(l_checkData_length.has_key('1') and (int(l_checkData_length['1'])) == 0):
-		instert_data = 'INSERT INTO DASH5803.'+ DATABASE_TABLE_NAME +' VALUES '+'("'+p_containerid+'","'+p_todayDate+'","'+l_time+'","'+p_quantity+'","'+p_status+'")'
+		instert_data = "INSERT INTO "+DB_SCHEMA+"."+DATABASE_TABLE_NAME +" VALUES "+"('"+p_containerid+"','"+p_todayDate+"','"+str(l_time)+"','"+str(p_quantity)+"','"+str(p_status)+"')"
 		try:
 			l_db_statement = ibm_db.exec_immediate(l_connection, instert_data)
 		except Exception as e:
 			logging.debug("dataBaseUpload_insertdata_ERROR : " + str(e))
 
 	else:
-		update_query = "UPDATE DASH5803."+ DATABASE_TABLE_NAME +" SET TIME = '"+str(l_time)+"', QUANTITY = '"+str(p_quantity)+"' WHERE DATES='" + str(p_todayDate) +"' AND STATUS ='"+str(p_status)+"' AND SCALE_ID = '"+p_containerid+"'"
+		update_query = "UPDATE "+DB_SCHEMA+"."+DATABASE_TABLE_NAME +" SET TIME = '"+str(l_time)+"', QUANTITY = '"+str(p_quantity)+"' WHERE DATES='" + str(p_todayDate) +"' AND STATUS ='"+str(p_status)+"' AND SCALE_ID = '"+p_containerid+"'"
 		try:
 			l_db_statement = ibm_db.exec_immediate(l_connection, update_query)
 		except Exception as e:
 			logging.debug("dataBaseUpload_updatequery_ERROR : " + str(e))
+	ibm_db.free_stmt(l_db_statement)
+	ibm_db.close(l_connection)
 
 
 '''****************************************************************************************
@@ -310,8 +335,11 @@ Parameters 		:	p_containerid - Respective contianer
 ****************************************************************************************'''
 def appHistoricalGraph(p_containerid,p_timeSpan):
 	global DATABASE_TABLE_NAME
+
 	#Connecting to the database
 	l_connection = dB_init()
+	if(l_connection == None):
+		return
 	#Evaluvating the number of days to query the db
 	p_timeSpan = p_timeSpan - 1
 
@@ -331,10 +359,10 @@ def appHistoricalGraph(p_containerid,p_timeSpan):
 		l_refill_history[l_edate_loop] = [p_containerid,0,0,0]
 		l_consumption_history[l_edate_loop] = [p_containerid,0,0,0]
 
-	twodate_query = "SELECT * FROM DASH5803."+ DATABASE_TABLE_NAME +"  WHERE DATES BETWEEN DATE(\'" + l_edate + "\') AND DATE(\'" + l_sdate + "\') AND SCALE_ID =" + p_containerid
+	l_twodate_query = "SELECT * FROM "+DB_SCHEMA+"."+DATABASE_TABLE_NAME +"  WHERE DATES BETWEEN DATE(\'" + l_edate + "\') AND DATE(\'" + l_sdate + "\') AND SCALE_ID =" + p_containerid
 	
 	try:
-		l_db_statement = ibm_db.exec_immediate(l_connection, twodate_query)
+		l_db_statement = ibm_db.exec_immediate(l_connection, l_twodate_query)
 		l_temp_dict = ibm_db.fetch_assoc(l_db_statement)
 	except Exception as e:
 		logging.debug("appHistoricalGraph_twodatequery exec/fetch_ERROR : " + str(e))
@@ -356,6 +384,8 @@ def appHistoricalGraph(p_containerid,p_timeSpan):
 	
 	#deleting the history 
 	del l_refill_history,l_consumption_history
+	ibm_db.free_stmt(l_db_statement)
+	ibm_db.close(l_connection)
 
 '''****************************************************************************************
 
