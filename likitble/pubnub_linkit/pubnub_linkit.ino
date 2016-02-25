@@ -100,11 +100,8 @@ void loop(void) {
         bleClient.getScanResult(i, info);
         if (!bleClient.connect(info.bd_addr)) // search all services till timeout or searching done.
         {
-//            Serial.println("Failed to connect to the device");
+//          Serial.println("Failed to connect to the device");
             delay(0xff);
-        }
-        else{
-//          Serial.println("Successfully Connection Esatablished");
         }
         long int l_starttime = millis();
         while (1)
