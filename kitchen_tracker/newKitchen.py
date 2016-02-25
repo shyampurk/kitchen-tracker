@@ -2,6 +2,7 @@
 SERVER - KITCHEN TRACKER
 *********************************************************************************'''
 #Import the Modules Required
+import os
 from pubnub import Pubnub
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -9,17 +10,15 @@ import ConfigParser
 import logging
 
 # Modules for the dashDB
-import ibmdbpy
-from ibmdbpy.base import IdaDataBase
-from ibmdbpy.frame import IdaDataFrame
-from pandas import DataFrame
-import pandas
+import ibm_db
+from ibm_db import connect, active
 
 #Importing the Config File and Parsing the file using the ConfigParser
 config_file = "./config.ini"
 Config = ConfigParser.ConfigParser()
 Config.read(config_file)
 logging.basicConfig(filename='logger.log',level=logging.DEBUG)
+
 #CONSTANTS 
 TIMESPAN_FOR_HISTORY = 7
 
@@ -30,6 +29,7 @@ SETTINGS_LABEL = 0
 SETTINGS_EXPIRY = 1
 SETTINGS_CRITICAL_LEVEL = 2
 SETTINGS_DATE = 3
+
 #KEY = ContainerID VALE =  Present Weight, Previous Weight, Total Refill, Total Consumed, Flag, Start Date 
 g_containerStatus = dict()
 STATUS_PRESENT_WEIGHT = 0
@@ -38,12 +38,15 @@ STATUS_TOTAL_REFILL = 2
 STATUS_TOTAL_CONSUMED = 3
 STATUS_FLAG = 4
 STATUS_DATE = 5 
+
 #KEY = Label VALUE =  Container ID, Present Weight, Critical Level, Expiry in Days, Status(Refill/Consumed)
 g_containerMessage = dict()
+
 #KEY = Container ID VALUE = Present DATE, Consumend Value
 g_perdayConsumption = dict()
 CONSUM_DATE = 0
 CONSUM_QTY = 1
+
 #KEY = Container ID VALUE = Present DATE, Refill Value
 g_perdayRefill = dict()
 REFILL_DATE = 0
@@ -74,15 +77,12 @@ PUB_KEY = ConfigSectionMap("pubnub_init")['pub_key']
 SUB_KEY = ConfigSectionMap("pubnub_init")['sub_key']
 
 #Database Related Variables and Lists 
+DB_HOST = ConfigSectionMap("database")['db_host']
+DB_NAME = ConfigSectionMap("database")['db_name']
 DATABASE_TABLE_NAME = ConfigSectionMap("database")['table_name']
 DB_USER_NAME = ConfigSectionMap("database")['username']
 DB_PASSWORD = ConfigSectionMap("database")['pwd']
-COLUMNS = ['SCALE_ID','DATES','TIME','QUANTITY','STATUS']
-index = [0]
-g_idadb = 0
-g_idadf = 0	
-
-DB_URL = 'jdbc:db2://dashdb-entry-yp-dal09-07.services.dal.bluemix.net:50000/BLUDB:user=' + DB_USER_NAME + ';password=' + DB_PASSWORD
+DB_PORT = ConfigSectionMap("database")['port']
 
 '''****************************************************************************************
 
@@ -108,18 +108,22 @@ Parameters 		:	None
 
 ****************************************************************************************'''
 def dB_init():
-	global DATABASE_TABLE_NAME,g_idadb,g_idadf
-	l_dbtry = 0
-	while(l_dbtry<3):	
-		try:
-			l_dbtry = 3
-			jdbc = DB_URL
-			g_idadb = IdaDataBase(jdbc)
-			g_idadf = IdaDataFrame(g_idadb,DATABASE_TABLE_NAME)
-			logging.info("dashDB-connected")
-		except Exception as error:
-			l_dbtry += 1
-			logging.warning(error)
+	if 'VCAP_SERVICES' in os.environ:
+	    hasVcap = True
+	    import json
+	    vcap_services = json.loads(os.environ['VCAP_SERVICES'])
+	    if 'dashDB' in vcap_services:
+	        hasdashDB = True
+	        service = vcap_services['dashDB'][0]
+	        credentials = service["credentials"]
+	        url = 'DATABASE=%s;uid=%s;pwd=%s;hostname=%s;port=%s;' % ( credentials["db"],credentials["username"],credentials["password"],credentials["host"],credentials["port"])
+	    else:
+	        hasdashDB = False
+	else:
+	    hasVcap = False
+	    url = 'DATABASE=%s;uid=%s;pwd=%s;hostname=%s;port=%s;' % (DB_NAME,DB_USER_NAME,DB_PASSWORD,DB_HOST,DB_PORT)
+	connection = ibm_db.connect(url, '', '')
+	return connection
 
 '''****************************************************************************************
 
@@ -155,11 +159,11 @@ Parameters 		:	p_requester - Request sent from APP
 def appSetting(p_requester,p_containerid,p_containerlabel,p_expiryInMonths,p_criticallevel):
 	if(p_requester == "APP"):
 		# Container Label, Expiry in Months, Critical Level, End Date
-		if(not g_containerSettings.has_key(p_containerid)):
+		if(not g_containerSettings.has_key(p_containerid) and not g_containerMessage.has_key(p_containerlabel)):
 			g_containerSettings[p_containerid] = [p_containerlabel,p_expiryInMonths,p_criticallevel,0]
 			defaultLoader(p_containerid)
 		else:
-			pass
+			pubnub.publish(channel="kitchenApp-resp", message={"warning":"ID/Name is already registered"})
 	else:
 		pass
 
@@ -182,36 +186,6 @@ def appReset(p_requester,p_containerid):
 
 '''****************************************************************************************
 
-Function Name 	:	dataBaseUpload
-Description		:	Upload the Refill/Consumed Status and Quantity to the DB
-Parameters 		:	p_todayDate - Respective Date
-					p_containerid - Respective Container ID
-					p_status - Status of the Update : Refill/ consumed 
-						0 - Refill
-						1 - Consumed
-					p_quantity - Present Quantity  to be uploaded to DB
-
-****************************************************************************************'''
-def dataBaseUpload(p_todayDate,p_containerid,p_status,p_quantity):
-	l_checkData_length = 0
-	l_time = datetime.datetime.now().strftime('%H:%M:%S')
-	l_todays_date = pandas.Timestamp(p_todayDate)
-	date_query = "SELECT COUNT(*) FROM DASH5803.HOME1 WHERE DATES = '"+str(p_todayDate)+"'AND STATUS = '"+str(p_status)+"' AND SCALE_ID = '"+p_containerid+"'"
-	try:
-		l_checkData_length = g_idadb.ida_query(date_query)
-	except Exception as error:
-		pass
-	if(int(l_checkData_length) == 0):
-		data = {'SCALE_ID':p_containerid,'DATES':l_todays_date,'TIME':l_time,'QUANTITY':p_quantity,'STATUS':p_status}
-		df2 = pandas.DataFrame(data,index = index,columns=COLUMNS)
-		g_idadf = IdaDataFrame(g_idadb,DATABASE_TABLE_NAME)
-		g_idadb.append(g_idadf,df2,maxnrow = 1)
-	else:
-		update_query = "UPDATE DASH5803.HOME1 SET TIME = '"+str(l_time)+"', QUANTITY = '"+str(p_quantity)+"' WHERE DATES='" + str(p_todayDate) +"' AND STATUS ='"+str(p_status)+"' AND SCALE_ID = '"+p_containerid+"'"
-		l_update = 	g_idadb.ida_query(update_query)
-
-'''****************************************************************************************
-
 Function Name 	:	containerWeight
 Description		:	Once the device responses the present weight the server handles the 
 					data and evaluvates the container is refilled / consumed
@@ -225,6 +199,7 @@ def containerWeight(p_containerid,p_weight):
 	if(g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] != g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT]):
 		dB_init()
 		l_todayDate = datetime.datetime.now().date()
+		del g_containerMessage["warning"]
 		if(g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] > g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT]):
 			if(g_perdayRefill[p_containerid][REFILL_DATE] != l_todayDate):
 				del g_perdayRefill[p_containerid]
@@ -271,8 +246,35 @@ def containerWeight(p_containerid,p_weight):
 		else:
 			pass			
 	else:
-		pubnub.publish(channel="kitchenApp-resp", message={g_containerSettings[p_containerid][SETTINGS_LABEL]:[p_containerid,p_weight,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],50,0]})
+		pubnub.publish(channel="kitchenApp-resp", message={g_containerSettings[p_containerid][SETTINGS_LABEL]:[p_containerid,p_weight,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],50,0],"warning":"!!Registration Success!!"})
 		g_containerMessage[g_containerSettings[p_containerid][SETTINGS_LABEL]] = [p_containerid,p_weight,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],50,0]
+
+'''****************************************************************************************
+
+Function Name 	:	dataBaseUpload
+Description		:	Upload the Refill/Consumed Status and Quantity to the DB
+Parameters 		:	p_todayDate - Respective Date
+					p_containerid - Respective Container ID
+					p_status - Status of the Update : Refill/ consumed 
+						0 - Refill
+						1 - Consumed
+					p_quantity - Present Quantity  to be uploaded to DB
+
+****************************************************************************************'''
+def dataBaseUpload(p_todayDate,p_containerid,p_status,p_quantity):
+	l_checkData_length = dict()
+	l_connection  = dB_init()
+	l_time = datetime.datetime.now().strftime('%H:%M:%S')
+	l_date_query = "SELECT COUNT(*) FROM DASH5803."+ DATABASE_TABLE_NAME +" WHERE DATES = '"+str(p_todayDate)+"'AND STATUS = '"+str(p_status)+"' AND SCALE_ID = '"+p_containerid+"'"
+	l_db_statement = ibm_db.exec_immediate(l_connection, l_date_query)
+	l_checkData_length = ibm_db.fetch_assoc(l_db_statement)
+
+	if(l_checkData_length.has_key('1') and (int(l_checkData_length['1'])) == 0):
+		instert_data = 'INSERT INTO DASH5803.'+ DATABASE_TABLE_NAME +' VALUES '+'("'+p_containerid+'","'+p_todayDate+'","'+l_time+'","'+p_quantity+'","'+p_status+'")'
+		l_db_statement = ibm_db.exec_immediate(l_connection, instert_data)
+	else:
+		update_query = "UPDATE DASH5803."+ DATABASE_TABLE_NAME +" SET TIME = '"+str(l_time)+"', QUANTITY = '"+str(p_quantity)+"' WHERE DATES='" + str(p_todayDate) +"' AND STATUS ='"+str(p_status)+"' AND SCALE_ID = '"+p_containerid+"'"
+		l_db_statement = ibm_db.exec_immediate(l_connection, update_query)
 
 '''****************************************************************************************
 
@@ -284,50 +286,41 @@ Parameters 		:	p_containerid - Respective contianer
 
 ****************************************************************************************'''
 def appHistoricalGraph(p_containerid,p_timeSpan):
-	global DATABASE_TABLE_NAME,g_idadf, g_idadb
-	dB_init()
+	global DATABASE_TABLE_NAME
+	l_connection = dB_init()
 	p_timeSpan = p_timeSpan - 1
 	l_refill_history = dict()
 	l_consumption_history = dict()
+	l_temp_dict = dict()
 	l_sdat = datetime.datetime.now().date()
 	l_edat = l_sdat - datetime.timedelta(days=p_timeSpan)
 	l_sdate = l_sdat.strftime('%Y-%m-%d')
 	l_edate = l_edat.strftime('%Y-%m-%d')
-	# print l_sdate, l_edate
-	twodate_query = "SELECT * FROM DASH5803."+ DATABASE_TABLE_NAME +"  WHERE DATES BETWEEN DATE(\'" + l_edate + "\') AND DATE(\'" + l_sdate + "\')"
-	l_databaseTableData = []
-	l_databaseTableData.append(g_idadb.ida_query(twodate_query))
-	l_databaseTableData = l_databaseTableData[0]
-	try:
-		l_dataOrder = 0
-		
-		#To Print the database data with timeSpan
-		# print l_databaseTableData
-		
-		#Parsing the data from the database and update the dictionary with respective time span
-		for i in range(p_timeSpan,-1,-1):
-			l_edat = l_sdat - datetime.timedelta(days=i)
-			l_edate = l_edat.strftime('%Y-%m-%d')
-			l_refill_history[l_edate] = [p_containerid,0,0,0]
-			l_consumption_history[l_edate] = [p_containerid,0,0,0]
-		for i,j,k,l,m in zip(l_databaseTableData['SCALE_ID'],l_databaseTableData['DATES'],l_databaseTableData['TIME'],l_databaseTableData['QUANTITY'],l_databaseTableData['STATUS']):
-			if(i == p_containerid):
-				if m == 0:
-					l_refill_history[j] = [i,k,"%.2f"%l,m]
-				else:
-					l_consumption_history[j] = [i,k,"%.2f"%l,m]
-				# Data Publishing with l_refill_history / l_consumption_history: Dates : [container ID,TIME,weight,status(refill/consumed)]
+
+	#Parsing the data from the database and update the dictionary with respective time span
+	for i in range(p_timeSpan,-1,-1):
+		l_edat_loop = l_sdat - datetime.timedelta(days=i)
+		l_edate_loop = l_edat_loop.strftime('%Y-%m-%d')
+		l_refill_history[l_edate_loop] = [p_containerid,0,0,0]
+		l_consumption_history[l_edate_loop] = [p_containerid,0,0,0]
+
+	twodate_query = "SELECT * FROM DASH5803."+ DATABASE_TABLE_NAME +"  WHERE DATES BETWEEN DATE(\'" + l_edate + "\') AND DATE(\'" + l_sdate + "\') AND SCALE_ID =" + p_containerid
+	l_db_statement = ibm_db.exec_immediate(l_connection, twodate_query)
+	l_temp_dict = ibm_db.fetch_assoc(l_db_statement)
+	while l_temp_dict:
+		if(l_temp_dict["SCALE_ID"] == p_containerid):
+			l_date = l_temp_dict["DATES"].strftime('%Y-%m-%d')
+			if(l_temp_dict["STATUS"] == 0):
+				l_refill_history[l_date] = [l_temp_dict["SCALE_ID"],l_temp_dict["TIME"],"%.2f"%l_temp_dict["QUANTITY"],l_temp_dict["STATUS"]]
 			else:
-				pass
-	except Exception as occuredError:
-		logging.warning(occuredError)
-	channel_refill = "kitchenApp-refillHistory-" + p_containerid
-	channel_consumption = "kitchenApp-consumptionHistory-" + p_containerid
-	pubnub.publish(channel=channel_refill, message=l_refill_history)
-	pubnub.publish(channel=channel_consumption, message=l_consumption_history)
+				l_consumption_history[l_date] = [l_temp_dict["SCALE_ID"],l_temp_dict["TIME"],"%.2f"%l_temp_dict["QUANTITY"],l_temp_dict["STATUS"]]				
+		l_temp_dict = ibm_db.fetch_assoc(l_db_statement)
+	print l_refill_history, l_consumption_history
+	pubnub.publish(channel="kitchenApp-refillHistory", message=l_refill_history)
+	pubnub.publish(channel="kitchenApp-consumptionHistory", message=l_consumption_history)
 	
 	#deleting the history 
-	del l_databaseTableData,l_refill_history,l_consumption_history
+	del l_refill_history,l_consumption_history
 
 '''****************************************************************************************
 
@@ -392,7 +385,7 @@ Parameters 		:	message - error message
 ****************************************************************************************'''
 def error(message):
 	pass
-    # logging.debug("ERROR : " + str(message))
+    logging.debug("ERROR : " + str(message))
 
 '''****************************************************************************************
 

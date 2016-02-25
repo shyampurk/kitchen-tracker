@@ -1,6 +1,9 @@
-var cid,eslider,tslider,cname,getContainerMessage
+/**************************************************************************************************
+                                    KITCHEN TRACKER
+****************************************************************************************************/ 
+var containerId,expirySlider,thresholdSlider,containerItemName,getContainerMessage
 
-var refillhistory =[], consumptionhistory=[], finalobj
+var refillhistory =[], consumptionhistory=[]
 
 var refill_1 = [], consumption_1 = [], consumption_2 = [], refill_2 = []
 
@@ -10,24 +13,39 @@ CONTAINER_1_ID = null
 CONTAINER_2_ID = null
 
 var app = {
-
+/**************************************************************************************************
+    FUNCTION NAME : initialize()
+    DESCRIPTION   : initialize the app with events
+****************************************************************************************************/ 
     initialize: function() {
         this.bindEvents();
-        $(window).on("navigate", function (event, data) {          
-            event.preventDefault();      
-        })
+		// document.getElementById("#button1").disabled = true;
+  //       document.getElementById("button2").disabled = true;
+  //       document.getElementById("transactionHistory2").disabled = true;
+  //       document.getElementById("transactionHistory1").disabled = true;
+        // $(window).on("navigate", function (event, data) {          
+        //     event.preventDefault();      
+        // })
     },
-
+/**************************************************************************************************
+    FUNCTION NAME : bindEvents()
+    DESCRIPTION   : Initialize Pubnub and adds device ready eventListner to app 
+****************************************************************************************************/ 
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
         app.pubnubInit();
     },
-  
+/**************************************************************************************************
+    FUNCTION NAME : onDeviceReady()
+    DESCRIPTION   : pass device ready id to received event 
+****************************************************************************************************/   
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
-        
     },
-
+/**************************************************************************************************
+    FUNCTION NAME : receivedEvent()
+    DESCRIPTION   : on Deviceready loads the app displaying main page
+****************************************************************************************************/ 
     receivedEvent: function(id) {
         var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
@@ -35,121 +53,140 @@ var app = {
         listeningElement.setAttribute('style', 'display:none;');
         receivedElement.setAttribute('style', 'display:block;');
     },
-
+/**************************************************************************************************
+    FUNCTION NAME : pubnubInit()
+    DESCRIPTION   : initialize pubnub keys and set app to default function 
+****************************************************************************************************/ 
     pubnubInit: function() {
         pubnub = PUBNUB({                          
             publish_key   : 'pub-c-913ab39c-d613-44b3-8622-2e56b8f5ea6d',
             subscribe_key : 'sub-c-8ad89b4e-a95e-11e5-a65d-02ee2ddab7fe'})
         app.default()
     },
-
+/**************************************************************************************************
+    FUNCTION NAME : resetitem()
+    DESCRIPTION   : on reset button click , gets the container id and publishes reset request to server
+    				and set container level and values to default 
+****************************************************************************************************/ 
     resetitem: function() {
-        cid = document.getElementById("cid").value;
-        app.publish({"requester":"APP","requestType":1,"containerID":cid});
-        if(cid == "001"){
+        containerId = document.getElementById("containerId").value;
+        app.publish({"requester":"APP","requestType":1,"containerID":containerId});
+        if(containerId == "001"){
             document.getElementById('itemname1').innerHTML = null;
             document.getElementById('itemquantity1').innerHTML = null;
-            app.containerlevel("#item11","#item12","#item13","#item14","#container001",100,20,0);
+            app.containerlevel("#rect11","#rect12","#rect13","#rect14","#container001",100,20,0);
         }
         else{
             document.getElementById('itemname2').innerHTML = null;
             document.getElementById('itemquantity2').innerHTML = null;
-            app.containerlevel("#item21","#item22","#item23","#item24","#container002",100,20,0);
+            app.containerlevel("#rect21","#rect22","#rect23","#rect24","#container002",100,20,0);
         }
     },
-    
+/**************************************************************************************************
+    FUNCTION NAME : registeritem()
+    DESCRIPTION   : registers item and publishes container values to server
+****************************************************************************************************/     
     registeritem: function() {
         $(document).ready(function(){       
             $(':mobile-pagecontainer').pagecontainer('change', $('#settings-page'));        
-            cid = document.getElementById("cid").value;
-            eslider = document.getElementById("eslider").value;
-            tslider = document.getElementById("tslider").value;
-            cname = document.getElementById("cname").value;
-            getContainerMessage = "{\"requester\":\"APP\",\"requestType\":0,\"containerID\":\""+cid+"\",\"expiryMonths\":"+eslider+",\"containerLabel\":\""+cname+"\",\"criticalLevel\":"+tslider+"}";
+            containerId = document.getElementById("containerId").value;
+            expirySlider = document.getElementById("expirySlider").value;
+            thresholdSlider = document.getElementById("thresholdSlider").value;
+            containerItemName = document.getElementById("containerItemName").value;
+            getContainerMessage = '{\"requester\":\"APP\",\"requestType\":0,\"containerID\":\"'+ containerId +'\",\"expiryMonths\":'+expirySlider+',\"containerLabel\":\"'+containerItemName+'\",\"criticalLevel\":'+thresholdSlider+'}';
             var data = JSON.parse(getContainerMessage)
             app.publish(data);
-            app.graph1Show();
-            app.graph2Show();
-            app.transaction1();
-            app.transaction2();
+            if(containerId == "001"){
+            	app.graph1Show();
+            	app.transaction1();	
+            }
+            else{
+            	app.graph2Show();
+            	app.transaction2();
+            }
         })
     },
 
     default: function() {
         app.subscribeStart();
         $(document).ready(function(){
-            $(':mobile-pagecontainer').pagecontainer('change', $('#mainpage'));   
+            $(':mobile-pagecontainer').pagecontainer('change', $('#mainpage'));
         });
     },
-    containerlevel:function(p_id1,p_id2,p_id3,p_id4,p_container,val2,exp2,thr){
+/**************************************************************************************************
+    FUNCTION NAME : containerlevel()
+    DESCRIPTION   : sets the container level with appropriate weight and threshold 
+****************************************************************************************************/ 
+    containerlevel:function(p_rect1,p_rect2,p_rect3,p_rect4,p_container,p_weight,p_expiry,p_threshold){
             var color_red ="#e12727";
             var color_green ="#39B54A";
             var color_orange ="#fec057";
             var color_black = "#000000";
             var color_lightorange ="#ffdab9";
-            $item2 = $(p_container);
-            var a = val2;
-            var exp = exp2;
-            if (parseInt(exp) <= 1){
-                $(p_id1,$item2).attr('style',"fill:"+color_red)
-                $(p_id2,$item2).attr('style',"fill:"+color_red)
-                $(p_id3,$item2).attr('style',"fill:"+color_red)
-                $(p_id4,$item2).attr('style',"fill:"+color_red)
+            $containerItem = $(p_container);
+            if (parseInt(p_expiry) <= 1){
+                $(p_rect1,$containerItem).attr('style',"fill:"+color_red)
+                $(p_rect2,$containerItem).attr('style',"fill:"+color_red)
+                $(p_rect3,$containerItem).attr('style',"fill:"+color_red)
+                $(p_rect4,$containerItem).attr('style',"fill:"+color_red)
             }
             else {
-                if (a==0){
-                    $(p_id1).hide();
-                    $(p_id2).hide();
-                    $(p_id3).hide();
-                    $(p_id4).hide();
+                if (p_weight==0){
+                    $(p_rect1).hide();
+                    $(p_rect2).hide();
+                    $(p_rect3).hide();
+                    $(p_rect4).hide();
                 }
-                else if(a<thr || a>0.1 && a<0.5){
-                    $(p_id1).hide();
-                    $(p_id2).hide();
-                    $(p_id3).hide();
-                    $(p_id4,$item2).attr('style',"fill:"+color_lightorange)
+                else if(p_weight<p_threshold || p_weight>0.1 && p_weight<0.5){
+                    $(p_rect1).hide();
+                    $(p_rect2).hide();
+                    $(p_rect3).hide();
+                    $(p_rect4,$containerItem).attr('style',"fill:"+color_lightorange)
                 }
-                else if(a>thr && a>=0.5 && a<1){
-                    $(p_id1).hide();
-                    $(p_id2).hide();
-                    $(p_id3).hide();
-                    $(p_id4,$item2).attr('style',"fill:"+color_orange)
+                else if(p_weight>p_threshold && p_weight>=0.5 && p_weight<1){
+                    $(p_rect1).hide();
+                    $(p_rect2).hide();
+                    $(p_rect3).hide();
+                    $(p_rect4,$containerItem).attr('style',"fill:"+color_orange)
                 }
-                else if(a>thr && a>=1 && a<=2){
-                    $(p_id1).hide();
-                    $(p_id2).hide();
-                    $(p_id3,$item2).attr('style',"fill:"+color_orange)
-                    $(p_id4,$item2).attr('style',"fill:"+color_green)
+                else if(p_weight>p_threshold && p_weight>=1 && p_weight<=2){
+                    $(p_rect1).hide();
+                    $(p_rect2).hide();
+                    $(p_rect3,$containerItem).attr('style',"fill:"+color_orange)
+                    $(p_rect4,$containerItem).attr('style',"fill:"+color_green)
                 }
-                else if(a>thr && a>2 && a<=3){
-                    $(p_id1).hide();
-                    $(p_id2,$item2).attr('style',"fill:"+color_orange)
-                    $(p_id3,$item2).attr('style',"fill:"+color_green)
-                    $(p_id4,$item2).attr('style',"fill:"+color_green)
+                else if(p_weight>p_threshold && p_weight>2 && p_weight<=3){
+                    $(p_rect1).hide();
+                    $(p_rect2,$containerItem).attr('style',"fill:"+color_orange)
+                    $(p_rect3,$containerItem).attr('style',"fill:"+color_green)
+                    $(p_rect4,$containerItem).attr('style',"fill:"+color_green)
                 }
-                else if(a>thr && a>3 && a<4){
-                    $(p_id1,$item2).attr('style',"fill:"+color_orange)
-                    $(p_id2,$item2).attr('style',"fill:"+color_green)
-                    $(p_id3,$item2).attr('style',"fill:"+color_green)
-                    $(p_id4,$item2).attr('style',"fill:"+color_green)
+                else if(p_weight>p_threshold && p_weight>3 && p_weight<4){
+                    $(p_rect1,$containerItem).attr('style',"fill:"+color_orange)
+                    $(p_rect2,$containerItem).attr('style',"fill:"+color_green)
+                    $(p_rect3,$containerItem).attr('style',"fill:"+color_green)
+                    $(p_rect4,$containerItem).attr('style',"fill:"+color_green)
                 }
-                else if(a>thr && a>4 && a<10){
-                    $(p_id1,$item2).attr('style',"fill:"+color_green)
-                    $(p_id2,$item2).attr('style',"fill:"+color_green)
-                    $(p_id3,$item2).attr('style',"fill:"+color_green)
-                    $(p_id4,$item2).attr('style',"fill:"+color_green)
+                else if(p_weight>p_threshold && p_weight>4 && p_weight<10){
+                    $(p_rect1,$containerItem).attr('style',"fill:"+color_green)
+                    $(p_rect2,$containerItem).attr('style',"fill:"+color_green)
+                    $(p_rect3,$containerItem).attr('style',"fill:"+color_green)
+                    $(p_rect4,$containerItem).attr('style',"fill:"+color_green)
                 }
-                else if(a>50){
-                    $(p_id1,$item2).attr('style',"fill:"+color_black)
-                    $(p_id2,$item2).attr('style',"fill:"+color_black)
-                    $(p_id3,$item2).attr('style',"fill:"+color_black)
-                    $(p_id4,$item2).attr('style',"fill:"+color_black)
+                else if(p_weight>10){
+                    $(p_rect1,$containerItem).attr('style',"fill:"+color_black)
+                    $(p_rect2,$containerItem).attr('style',"fill:"+color_black)
+                    $(p_rect3,$containerItem).attr('style',"fill:"+color_black)
+                    $(p_rect4,$containerItem).attr('style',"fill:"+color_black)
                 }
             }
     },
 /**************************************************************************************************
     FUNCTION NAME : graph(),graph1Show(),graph2Show()
-    DESCRIPTION   : Publish  
+    DESCRIPTION   : displays consumption and refill data in graph.
+    				graph1show()- displays container1's data on a popup
+    				graph2show()- displays container2's data on a popup
+    				graph() - consumption /refill data shown in graph 
 ****************************************************************************************************/
     graph1Show: function(){
         app.publish({"requester":"APP","requestType":2,"containerID":"001","timeSpan":7});
@@ -209,8 +246,12 @@ var app = {
         });
     },
 /**************************************************************************************************
-    FUNCTION NAME : subscribeStart()
-    DESCRIPTION   : 
+    FUNCTION NAME : transaction1(),transaction2(),transactiontable()
+    DESCRIPTION   : Provides the transaction history of each item in popup displaying 
+    				container Id, Container item Name, Date/Time of Consumption and Refill.
+    				transaction1() - opens container 1's transaction history table
+    				transaction2() - opens container 2's transaction history table
+    				transactiontable() - generates table with queried container's data
 ****************************************************************************************************/    
     transaction1: function(){
         $('#transactionHistory1').on('click', function () {
@@ -224,39 +265,51 @@ var app = {
     },
     transaction2: function(){
         $('#transactionHistory2').on('click', function () {
-                setTimeout(function () {
-                    $('#transaction').popup('open', {
-                    transition: 'pop'
-                    });
-                }, 1000);
-            });
-            app.transactiontable(CONTAINER_2_ID,container_history_2)
+            setTimeout(function () {
+                $('#transaction').popup('open', {
+                transition: 'pop'
+                });
+            }, 1000);
+        });
+        app.transactiontable(CONTAINER_2_ID,container_history_2)
     },
     transactiontable: function(p_containerName,p_message){
         m = new Array();
         n = new Array();
-        $(document).ready(function(){
-            var tableNew = '<thead><tr><th><p>DATE</p></th>' + 
-                '<th data-priority="1">Item</th><th data-priority="2">Refill' +
-                '</th><th data-priority="3">Consumed</th><th data-priority="3">Balance' +
-                '</th></tr></thead><tbody>'
-            for (var i = p_message.length - 1; i >= 0; i--) {
-                if(i == 0) m = p_message[i];
-                else if(i == 1) n = p_message[i];
-            }
-            for(var i = Object.keys(m).length - 1; i >= 0; i--){
-                var data = Object.keys(m)[i]
-                var data1 = Object.keys(n)[i]
-                tableNew += '<tr><th>'+ data + '</th><td><b class="ui-table-cell-label">ITEM ID</b>' + p_containerName + '</td><td><b class="ui-table-cell-label">TIME</b>' + m[data][1].toString() + '</td><td><b class="ui-table-cell-label">STATUS</b>' + "REFILLED" + '</td><td><b class="ui-table-cell-label">REFILLED</b>' + m[data][2].toString() + ' KGS</td><th>'+ data1 + '</th><td><b class="ui-table-cell-label">ITEM</b>' + p_containerName + '</td><td><b class="ui-table-cell-label">TIME</b>' + n[data1][1].toString() + '</td><td><b class="ui-table-cell-label">STATUS</b>' + "CONSUMED" + '</td><td><b class="ui-table-cell-label">CONSUMED</b>' + n[data1][2].toString() + ' KGS</td></tr>';
-            }
-            tableNew += '</tbody>'
-            $('#transTable').html(tableNew);
-        })
+        if(p_message.length > 1){
+	        $(document).ready(function(){
+	            var historyTable = '<thead><tr><th><p>DATE</p></th>' + 
+	                '<th data-priority="1">Item</th><th data-priority="2">Refill' +
+	                '</th><th data-priority="3">Consumed</th><th data-priority="3">Balance' +
+	                '</th></tr></thead><tbody>'
+	            for (var i = p_message.length - 1; i >= 0; i--) {
+	                if(i == 0) m = p_message[i];
+	                else if(i == 1) n = p_message[i];
+	            }
+	            for(var i = Object.keys(m).length - 1; i >= 0; i--){
+	                var data = Object.keys(m)[i]
+	                var data1 = Object.keys(n)[i]
+	                historyTable += '<tr><th>'+ data + '</th><td><b class="ui-table-cell-label">ITEM ID</b>' + p_containerName + 
+		                '</td><td><b class="ui-table-cell-label">TIME</b>' + m[data][1].toString() + 
+		                '</td><td><b class="ui-table-cell-label">STATUS</b>' + "REFILLED" + 
+		                '</td><td><b class="ui-table-cell-label">REFILLED</b>' + m[data][2].toString() + 
+		                ' KGS</td><th>'+ data1 + '</th><td><b class="ui-table-cell-label">ITEM</b>' + p_containerName + 
+		                '</td><td><b class="ui-table-cell-label">TIME</b>' + n[data1][1].toString() + 
+		                '</td><td><b class="ui-table-cell-label">STATUS</b>' + "CONSUMED" + 
+		                '</td><td><b class="ui-table-cell-label">CONSUMED</b>' + n[data1][2].toString() + ' KGS</td></tr>';
+	            }
+	            historyTable += '</tbody>'
+	            $('#transTable').html(historyTable);
+	        })
+        }
+        if (container_history_1.length > 1) container_history_1.length = 0;
+        if (container_history_2.length > 1) container_history_2.length = 0;
     },
 
 /**************************************************************************************************
     FUNCTION NAME : subscribeStart()
-    DESCRIPTION   : 
+    DESCRIPTION   : subscribes to server response and provides the container item data 
+    				(weight,consumption history,refill history)
 ****************************************************************************************************/
     subscribeStart: function(){  
         pubnub.subscribe({                                     
@@ -265,75 +318,70 @@ var app = {
                 for(var i = 0; i < Object.keys(message).length ; i++){
                     var data = Object.keys(message)[i]
                     if(message[data][0] == "001"){
-                        app.containerlevel("#item11","#item12","#item13","#item14","#container001",message[Object.keys(message)[i]][1],message[Object.keys(message)[i]][3],message[Object.keys(message)[i]][2]);
+                        app.containerlevel("#rect11","#rect12","#rect13","#rect14","#container001",message[Object.keys(message)[i]][1],message[Object.keys(message)[i]][3],message[Object.keys(message)[i]][2]);
                         document.getElementById('itemname1').innerHTML = data;
                         CONTAINER_1_ID = data
                         document.getElementById('itemquantity1').innerHTML = message[Object.keys(message)[i]][1];
                     }
                     else if(message[data][0] == "002"){
-                        app.containerlevel("#item21","#item22","#item23","#item24","#container002",message[Object.keys(message)[i]][1],message[Object.keys(message)[i]][3],message[Object.keys(message)[i]][2]);
+                        app.containerlevel("#rect21","#rect22","#rect23","#rect24","#container002",message[Object.keys(message)[i]][1],message[Object.keys(message)[i]][3],message[Object.keys(message)[i]][2]);
                         document.getElementById('itemname2').innerHTML = data;
                         CONTAINER_2_ID = data
                         document.getElementById('itemquantity2').innerHTML = message[Object.keys(message)[i]][1];
                     }
                 }
+                if("warning" in message){
+                	alert(message.warning);
+                }
             },            
             connect: function(){
                 app.publish({"requester":"APP","requestType":3})
+                app.graph1Show();
+            	app.transaction1();
+            	app.graph2Show();
+            	app.transaction2();
             }
         }),
         pubnub.subscribe({
-            channel: "kitchenApp-refillHistory-001",
+            channel: "kitchenApp-refillHistory",
             message: function(message){
-                if (container_history_1.length > 1) container_history_1.length = 0;
-                container_history_1.push(message);
-                for(var i = 0; i < Object.keys(message).length ; i++){
-                    var datal = Object.keys(message)[i]
-                    refill_1[i] = (message[datal][2]);
+                if(message[Object.keys(message)[0]][0] == "001"){
+                	container_history_1.push(message);
+                	for(var i = 0; i < Object.keys(message).length ; i++){
+                    	var datal = Object.keys(message)[i]
+                    	refill_1[i] = (message[datal][2]);
+                	}
+                }
+                else{
+                	container_history_2.push(message);
+                	for(var i = 0; i < Object.keys(message).length ; i++){
+                    	var datal = Object.keys(message)[i]
+                    	refill_2[i] = (message[datal][2]);
+                	}	
                 }
             }
         }),        
         pubnub.subscribe({
-            channel: "kitchenApp-consumptionHistory-001",
-            message: function(message){ 
-                if (container_history_1.length > 1) container_history_1.length = 0;
-                container_history_1.push(message);
-                for(var i = 0; i < Object.keys(message).length ; i++){
-                    var datal = Object.keys(message)[i]
-                    consumption_1[i] = (message[datal][2]);
-                }
-            }
-        }),
-        pubnub.subscribe({
-            channel: "kitchenApp-refillHistory-002",
+            channel: "kitchenApp-consumptionHistory",
             message: function(message){
-                if (container_history_2.length > 1) container_history_2.length = 0;
-                container_history_2.push(message);
-                for(var i = 0; i < Object.keys(message).length ; i++){
-                    var datal = Object.keys(message)[i]
-                    refill_2[i] = (message[datal][2]);
+                if(message[Object.keys(message)[0]][0] == "001"){
+                	container_history_1.push(message);
+                	for(var i = 0; i < Object.keys(message).length ; i++){
+                    	var datal = Object.keys(message)[i];
+                    	consumption_1[i] = (message[datal][2]);
+                	}
                 }
-            }
-        }),
-        pubnub.subscribe({
-            channel: "kitchenApp-consumptionHistory-002",
-            message: function(message){ 
-                if (container_history_2.length > 1) container_history_2.length = 0;
-                container_history_2.push(message);
-                for(var i = 0; i < Object.keys(message).length ; i++){
-                    var datal = Object.keys(message)[i]
-                    consumption_2[i] = (message[datal][2]);
+                else{
+                	container_history_2.push(message);
+                	for(var i = 0; i < Object.keys(message).length ; i++){
+                    	var datal = Object.keys(message)[i]
+                    	consumption_2[i] = (message[datal][2]);
+                	}	
                 }
             }
         })
     },
-/**************************************************************************************************
-    FUNCTION NAME : showLoading()
-    DESCRIPTION   : show loading symbol on app load 
-****************************************************************************************************/ 
-    showLoading: function(text) {
-        $.mobile.loading("show");
-    },
+
 /**************************************************************************************************
     FUNCTION NAME : publish()
     DESCRIPTION   : publish the data to server 
@@ -342,7 +390,6 @@ var app = {
         pubnub.publish({                                    
             channel : "kitchenApp-req",
             message : message,
-            // callback: function(m){ console.log(m) }
         })
     }
 };

@@ -9,19 +9,17 @@
 #include <LWiFiClient.h>
 #include "SPI.h"
 #include "./PubNub.h"
+#include "settings.h"
 
+#define channel "kitchenDevice-resp"
+
+//Contant Variables to identify the containers 
 const char *g_container1 = "001";
 const char *g_container2 = "002";
-
-//Setting up the Linkit to Work with the Local WiFi Router 
-#define WIFI_AP "radio" // provide your WIFI_AP name
-#define WIFI_PASSWORD "radio@123" //provide your WIFI password
-#define WIFI_AUTH LWIFI_WPA
-
-//Setting up the PubNub Publish and Subscribe Channels with Channel Name
-char pubkey[] = "pub-c-913ab39c-d613-44b3-8622-2e56b8f5ea6d";
-char subkey[] = "sub-c-8ad89b4e-a95e-11e5-a65d-02ee2ddab7fe";
-char channel[] = "kitchenDevice-resp";
+unsigned int counter_container1 = 0;
+unsigned int counter_container2 = 0;
+boolean flag_container1 = 0;
+boolean flag_container2 = 0;
 
 //Function Prototypes
 void pubnubPublish(char *p_data);
@@ -34,8 +32,8 @@ LGATTDeviceInfo info = {0};
 
 //Number of Devices Scanned by the Linkit BLE 
 volatile unsigned int g_numOfDevices = 0;
-char g_jsonResponse[26] = "";
-float g_previous_weight_1 = 5.55,g_previous_weight_2 = 5.55;
+char g_jsonResponse[26];
+float g_previous_weight_1,g_previous_weight_2,g_transient_weight_1,g_transient_weight_2;
 
 /*******************************************************************************************************
  Function Name            : prepare_json_data
@@ -59,7 +57,7 @@ void prepare_json_data(const char *p_containerId,const char* p_weight)
  Parameters               : None
  *******************************************************************************************************/
 void setup(void) {
-  Serial.begin(9600);
+  Serial.begin(115200);
   delay(3000);
   //Connecting to the local AP using the SSID and Password
   while (0 == LWiFi.connect(WIFI_AP, LWiFiLoginInfo(WIFI_AUTH, WIFI_PASSWORD)))
@@ -70,7 +68,7 @@ void setup(void) {
   //Initialize PubNub PUB SUB keys
   PubNub.begin(pubkey, subkey);
   //Connecting to the test UUID to establish the ble connection
-  if (bleClient.begin(test_uuid))
+BLE_CONNECT:  if (bleClient.begin(test_uuid))
   {
     Serial.println("BLE Successfully Started");
   }
@@ -78,6 +76,7 @@ void setup(void) {
   {
     Serial.println("Failed To Start BLE");
     delay(0xffffffff);
+    goto BLE_CONNECT;
   }
   //Scan's the available ble advertisers 
   g_numOfDevices = bleClient.scan(10);
@@ -101,11 +100,12 @@ void loop(void) {
         bleClient.getScanResult(i, info);
         if (!bleClient.connect(info.bd_addr)) // search all services till timeout or searching done.
         {
-            Serial.println("Failed to connect to the device");
+//            Serial.println("Failed to connect to the device");
             delay(0xff);
         }
-        else
-            Serial.println("Successfully Connection Esatablished");
+        else{
+//          Serial.println("Successfully Connection Esatablished");
+        }
         long int l_starttime = millis();
         while (1)
         {
@@ -115,50 +115,74 @@ void loop(void) {
           LGATTUUID characteristicUUID = 0xFFE1;
           LGATTAttributeValue attrValue;
           boolean isPrimary;
-          if(bleClient.setupNotification(1,serviceUUID, isPrimary, characteristicUUID));
-          if(bleClient.queryNotification(serviceUUID, isPrimary, characteristicUUID,
-          attrValue)){
-            Serial.println((char *)attrValue.value);
-            //attValue.value contains the data that is received from the client ble
-            if(attrValue.len > 0){
-              float l_weight_1,l_weight_2;
-              char l_buf[10];
-              char l_buf1[10];
-              for(int i = 0; i<=3;i++){
-                l_buf[i] = (char)attrValue.value[i+2];
-                l_buf1[i] = (char)attrValue.value[i+9];
+          bleClient.setupNotification(1,serviceUUID, isPrimary, characteristicUUID);
+          if((bleClient.queryNotification(serviceUUID, isPrimary, characteristicUUID,
+            attrValue))){
+              Serial.println((char *)attrValue.value);
+              //attValue.value contains the data that is received from the client ble
+              if(attrValue.len > 0){
+                float l_weight_1,l_weight_2;
+                char l_buf[10];
+                char l_buf1[10];
+                for(int i = 0; i<=3;i++){
+                  l_buf[i] = (char)attrValue.value[i+2];
+                  l_buf1[i] = (char)attrValue.value[i+9];
+                }
+                l_buf[4] = '\0';
+                l_buf1[4] = '\0';
+                l_weight_1 = atof(l_buf);
+                l_weight_2 = atof(l_buf1);
+                if((int)(g_previous_weight_1*1000) != (int)(l_weight_1*1000)){
+                  g_transient_weight_1 = l_weight_1;
+                  g_previous_weight_1 = l_weight_1;
+                  flag_container1 = 1;
+                  counter_container1 = 0;
+                }
+                else if((int)(g_transient_weight_1*1000) == (int)(l_weight_1*1000)){
+                  counter_container1++;
+                  if(counter_container1 == 3 && flag_container1 == 1){
+                    flag_container1 = 0;
+                    counter_container1 = 0;
+                    g_transient_weight_1 = 0;
+                    prepare_json_data(g_container1,l_buf);
+                    pubnubPublish(g_jsonResponse);
+                    memset(g_jsonResponse, 0, sizeof(g_jsonResponse));                      
+                  }
+                }
+                delay(500);
+                if((int)(g_previous_weight_2*1000) != (int)(l_weight_2*1000)){
+                  g_transient_weight_2 = l_weight_2;
+                  g_previous_weight_2 = l_weight_2;
+                  flag_container2 = 1;
+                  counter_container2 = 0;
+                }
+                else if((int)(g_transient_weight_2*1000) == (int)(l_weight_2*1000)){
+                  counter_container2++;
+                  if(counter_container2 == 3 && flag_container2 == 1){
+                    flag_container2 = 0;
+                    counter_container2 = 0;
+                    g_transient_weight_2 = 0;
+                    prepare_json_data(g_container2,l_buf1);
+                    pubnubPublish(g_jsonResponse);
+                    memset(g_jsonResponse, 0, sizeof(g_jsonResponse));                      
+                  }
+                }
               }
-              l_buf[4] = '\0';
-              l_buf1[4] = '\0';
-              l_weight_1 = atof(l_buf);
-              l_weight_2 = atof(l_buf1);
-              if((int)(g_previous_weight_1*100) != (int)(l_weight_1*100)){
-                g_previous_weight_1 = l_weight_1;
-                prepare_json_data(g_container1,l_buf);
-                pubnubPublish(g_jsonResponse);
-                memset(g_jsonResponse, 0, sizeof(g_jsonResponse));  
-              }
-              delay(500);
-              if((int)(g_previous_weight_2*100) != (int)(l_weight_2*100)){
-                g_previous_weight_2 = l_weight_2;
-                prepare_json_data(g_container2,l_buf1);
-                pubnubPublish(g_jsonResponse);
-                memset(g_jsonResponse, 0, sizeof(g_jsonResponse));  
-              }
-            }
-            Serial.println("Disconnect BLE Communication");
-            bleClient.disconnect(info.bd_addr);//Once the data is published disconnecting from the ble 
-            delay(5000);
-            break;
+              Serial.println("Disconnect BLE Communication");
+              bleClient.disconnect(info.bd_addr);//Once the data is published disconnecting from the ble 
+              delay(5000);
+              break;
           }
-          long int l_endtime = millis();
-          if(l_endtime - l_starttime > 1000){
-            break;
+          else{
+            long int l_endtime = millis();
+            if(l_endtime - l_starttime > 1000){
+              break;
+            }            
           }
         }
       }
     }
-    delay(5000);
+    delay(2000);
   }
 }
 /*******************************************************************************************************

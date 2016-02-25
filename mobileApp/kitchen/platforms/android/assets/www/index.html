@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/>
     <script src="https://cdn.pubnub.com/pubnub-3.7.18.min.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
     <script src="js/index.js"></script>
@@ -36,10 +36,10 @@
                         .st0{fill:#FFFFFF;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}
                     </style>
                     <polyline class="st0" points="9.8,20.2 13.8,12.6 13.8,157.6 143.8,157.6 143.8,12.6 148.2,20.1"></polyline>
-                    <rect id="item14" x="17" y="121.5" class="st14" width="123.6" height="33.8"></rect>
-                    <rect id="item13" x="17" y="85.5" class="st13" width="123.6" height="33.8"></rect>
-                    <rect id="item12" x="17" y="49.5" class="st12" width="123.6" height="33.8"></rect>
-                    <rect id="item11" x="17" y="13.5" class="st11" width="123.6" height="33.8"></rect>
+                    <rect id="rect14" x="17" y="121.5" class="st14" width="123.6" height="33.8"></rect>
+                    <rect id="rect13" x="17" y="85.5" class="st13" width="123.6" height="33.8"></rect>
+                    <rect id="rect12" x="17" y="49.5" class="st12" width="123.6" height="33.8"></rect>
+                    <rect id="rect11" x="17" y="13.5" class="st11" width="123.6" height="33.8"></rect>
                 </svg>
                 <div align="center">
                     <input id="button1" data-role="none" value="Graph" type="button"  onclick="app.graph1Show()"/>
@@ -55,10 +55,10 @@
                         .st0{fill:#FFFFFF;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}
                     </style>
                     <polyline class="st0" points="9.8,20.2 13.8,12.6 13.8,157.6 143.8,157.6 143.8,12.6 148.2,20.1"></polyline>
-                    <rect id="item24" x="17" y="121.5" class="st14" width="123.6" height="33.8"></rect>
-                    <rect id="item23" x="17" y="85.5" class="st13" width="123.6" height="33.8"></rect>
-                    <rect id="item22" x="17" y="49.5" class="st12" width="123.6" height="33.8"></rect>
-                    <rect id="item21" x="17" y="13.5" class="st11" width="123.6" height="33.8"></rect>
+                    <rect id="rect24" x="17" y="121.5" class="st14" width="123.6" height="33.8"></rect>
+                    <rect id="rect23" x="17" y="85.5" class="st13" width="123.6" height="33.8"></rect>
+                    <rect id="rect22" x="17" y="49.5" class="st12" width="123.6" height="33.8"></rect>
+                    <rect id="rect21" x="17" y="13.5" class="st11" width="123.6" height="33.8"></rect>
                 </svg>
                 <div align="center">
                     <input id="button2" data-role="none" value="Graph" type="button"  onclick="app.graph2Show()"/>
@@ -101,22 +101,22 @@
             <a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext"></a>
             <h2>Settings</h2>
         </div>
-
+        <div id="alert"></div>
         <div data-role="main" class="ui-content">
             <form>
                 <div class="ui-field-contain">
                     <label for="Cname">Container Id</label>
-                        <select id="cid" class="opts">
+                        <select id="containerId" class="opts">
                             <option selected="selected" value="001">001</option>
                             <option value="002">002</option>
                         </select><br/>
                         <label for="Lname">Label</label>
-                        <input id="cname" type="text" placeholder="item name" name="name"/>
+                        <input id="containerItemName" type="text" placeholder="item name" name="name"/>
                         <fieldset class="ui-field-contain">
                             <label for="threshold">Threshold</label>
-                            <input name="tslider" id="tslider" data-highlight="true" min="0" max="3" step="0.1" value="1.4" type="range"/><br/>
+                            <input name="thresholdSlider" id="thresholdSlider" data-highlight="true" min="0" max="3" step="0.1" value="1.4" type="range"/><br/>
                             <label for="Expiry">Expiry in months</label>
-                            <input name="eslider" id="eslider" data-highlight="true" min="1" max="24" value="4" type="range"/>
+                            <input name="expirySlider" id="expirySlider" data-highlight="true" min="1" max="24" value="4" type="range"/>
                         </fieldset>
                         <div align="center">
                             <input  value="Submit" data-inline="true" type="button" onclick="app.registeritem()"></input>
@@ -138,7 +138,7 @@
         </div>
 
         <div data-role="main" class="ui-content">
-            <p>Kitchen Tracker solves the most common dealer frustrations by providing a powerful mobile solution for tracking your shipments automatically, just a finger tap away. Imagine no more spreadsheets, lost orders, missing parts, or missed deadlines.</p>
+            <p>Kitchen Tracker solves the most common people's frustrations by providing a powerful mobile solution for tracking your kitchen items automatically, just a finger tap away.</p>
             <style type="text/css">
                 /* basic positioning */
                 .legend { list-style: none; }
@@ -160,8 +160,8 @@
                 <li><span class="lightorange"></span> Below Critical </li><br>
                 <li><span class="green"></span> Full</li><br>
                 <li><span class="black"></span> Not Registered</li><br>
-                <li><span class="consumption"></span> Consumed</li><br>
-                <li><span class="refill"></span> Refilled</li><br>
+                <li><span class="consumption"></span> Consumed Graph</li><br>
+                <li><span class="refill"></span> Refilled Graph</li><br>
             </ul>
             
         </div>

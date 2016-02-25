@@ -39,7 +39,7 @@ void setup() {
 
 /*******************************************************************************************************
  Function Name            : loop
- Description              : Gets the weight form  load cells and push to likit via ble
+ Description              : Gets the weight from  load cells and push to likit via ble
  Parameters               : None
  *******************************************************************************************************/
 void loop() {
