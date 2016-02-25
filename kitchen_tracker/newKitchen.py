@@ -18,7 +18,6 @@ config_file = "./config.ini"
 Config = ConfigParser.ConfigParser()
 Config.read(config_file)
 logging.basicConfig(filename='logger.log',level=logging.DEBUG)
-
 #CONSTANTS 
 TIMESPAN_FOR_HISTORY = 7
 
@@ -108,23 +107,32 @@ Parameters 		:	None
 
 ****************************************************************************************'''
 def dB_init():
-	if 'VCAP_SERVICES' in os.environ:
-	    hasVcap = True
-	    import json
-	    vcap_services = json.loads(os.environ['VCAP_SERVICES'])
-	    if 'dashDB' in vcap_services:
-	        hasdashDB = True
-	        service = vcap_services['dashDB'][0]
-	        credentials = service["credentials"]
-	        url = 'DATABASE=%s;uid=%s;pwd=%s;hostname=%s;port=%s;' % ( credentials["db"],credentials["username"],credentials["password"],credentials["host"],credentials["port"])
-	    else:
-	        hasdashDB = False
-	else:
-	    hasVcap = False
-	    url = 'DATABASE=%s;uid=%s;pwd=%s;hostname=%s;port=%s;' % (DB_NAME,DB_USER_NAME,DB_PASSWORD,DB_HOST,DB_PORT)
-	connection = ibm_db.connect(url, '', '')
-	return connection
-
+	dbtry = 0
+	while (dbtry < 3):
+		try:
+			if 'VCAP_SERVICES' in os.environ:
+			    hasVcap = True
+			    import json
+			    vcap_services = json.loads(os.environ['VCAP_SERVICES'])
+			    if 'dashDB' in vcap_services:
+			        hasdashDB = True
+			        service = vcap_services['dashDB'][0]
+			        credentials = service["credentials"]
+			        url = 'DATABASE=%s;uid=%s;pwd=%s;hostname=%s;port=%s;' % ( credentials["db"],credentials["username"],credentials["password"],credentials["host"],credentials["port"])
+			        print "VCAP_SERVICES" + url
+			    else:
+			        hasdashDB = False
+			else:
+			    hasVcap = False
+			    url = 'DATABASE=%s;uid=%s;pwd=%s;hostname=%s;port=%s;' % (DB_NAME,DB_USER_NAME,DB_PASSWORD,DB_HOST,DB_PORT)
+			    print "CONFIG" + url
+			connection = ibm_db.connect(url, '', '')
+			if (active(connection)):
+				return connection
+		
+		except Exception as error:
+			logging.debug("dataBase connection_ERROR : " + str(error))
+			dbtry+=1	
 '''****************************************************************************************
 
 Function Name 		:	defaultLoader
@@ -194,7 +202,7 @@ Parameters 		:	p_containerid - Container ID which is updated
 
 ****************************************************************************************'''
 def containerWeight(p_containerid,p_weight):
-	global DATABASE_TABLE_NAME,g_idadb,g_idadf
+	global DATABASE_TABLE_NAME
 	g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] =  p_weight
 	if(g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] != g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT]):
 		dB_init()
@@ -262,19 +270,34 @@ Parameters 		:	p_todayDate - Respective Date
 
 ****************************************************************************************'''
 def dataBaseUpload(p_todayDate,p_containerid,p_status,p_quantity):
+	global DATABASE_TABLE_NAME
 	l_checkData_length = dict()
 	l_connection  = dB_init()
 	l_time = datetime.datetime.now().strftime('%H:%M:%S')
+	
 	l_date_query = "SELECT COUNT(*) FROM DASH5803."+ DATABASE_TABLE_NAME +" WHERE DATES = '"+str(p_todayDate)+"'AND STATUS = '"+str(p_status)+"' AND SCALE_ID = '"+p_containerid+"'"
-	l_db_statement = ibm_db.exec_immediate(l_connection, l_date_query)
-	l_checkData_length = ibm_db.fetch_assoc(l_db_statement)
+	try:
+		l_db_statement = ibm_db.exec_immediate(l_connection, l_date_query)
+		
+		l_checkData_length = ibm_db.fetch_assoc(l_db_statement)
+	except Exception as e:
+		logging.debug("dataBaseUpload_datequery_ERROR : " + str(e))
+
 
 	if(l_checkData_length.has_key('1') and (int(l_checkData_length['1'])) == 0):
 		instert_data = 'INSERT INTO DASH5803.'+ DATABASE_TABLE_NAME +' VALUES '+'("'+p_containerid+'","'+p_todayDate+'","'+l_time+'","'+p_quantity+'","'+p_status+'")'
-		l_db_statement = ibm_db.exec_immediate(l_connection, instert_data)
+		try:
+			l_db_statement = ibm_db.exec_immediate(l_connection, instert_data)
+		except Exception as e:
+			logging.debug("dataBaseUpload_insertdata_ERROR : " + str(e))
+
 	else:
 		update_query = "UPDATE DASH5803."+ DATABASE_TABLE_NAME +" SET TIME = '"+str(l_time)+"', QUANTITY = '"+str(p_quantity)+"' WHERE DATES='" + str(p_todayDate) +"' AND STATUS ='"+str(p_status)+"' AND SCALE_ID = '"+p_containerid+"'"
-		l_db_statement = ibm_db.exec_immediate(l_connection, update_query)
+		try:
+			l_db_statement = ibm_db.exec_immediate(l_connection, update_query)
+		except Exception as e:
+			logging.debug("dataBaseUpload_updatequery_ERROR : " + str(e))
+
 
 '''****************************************************************************************
 
@@ -287,11 +310,15 @@ Parameters 		:	p_containerid - Respective contianer
 ****************************************************************************************'''
 def appHistoricalGraph(p_containerid,p_timeSpan):
 	global DATABASE_TABLE_NAME
+	#Connecting to the database
 	l_connection = dB_init()
+	#Evaluvating the number of days to query the db
 	p_timeSpan = p_timeSpan - 1
+
 	l_refill_history = dict()
 	l_consumption_history = dict()
 	l_temp_dict = dict()
+	
 	l_sdat = datetime.datetime.now().date()
 	l_edat = l_sdat - datetime.timedelta(days=p_timeSpan)
 	l_sdate = l_sdat.strftime('%Y-%m-%d')
@@ -305,8 +332,13 @@ def appHistoricalGraph(p_containerid,p_timeSpan):
 		l_consumption_history[l_edate_loop] = [p_containerid,0,0,0]
 
 	twodate_query = "SELECT * FROM DASH5803."+ DATABASE_TABLE_NAME +"  WHERE DATES BETWEEN DATE(\'" + l_edate + "\') AND DATE(\'" + l_sdate + "\') AND SCALE_ID =" + p_containerid
-	l_db_statement = ibm_db.exec_immediate(l_connection, twodate_query)
-	l_temp_dict = ibm_db.fetch_assoc(l_db_statement)
+	
+	try:
+		l_db_statement = ibm_db.exec_immediate(l_connection, twodate_query)
+		l_temp_dict = ibm_db.fetch_assoc(l_db_statement)
+	except Exception as e:
+		logging.debug("appHistoricalGraph_twodatequery exec/fetch_ERROR : " + str(e))
+
 	while l_temp_dict:
 		if(l_temp_dict["SCALE_ID"] == p_containerid):
 			l_date = l_temp_dict["DATES"].strftime('%Y-%m-%d')
@@ -314,8 +346,11 @@ def appHistoricalGraph(p_containerid,p_timeSpan):
 				l_refill_history[l_date] = [l_temp_dict["SCALE_ID"],l_temp_dict["TIME"],"%.2f"%l_temp_dict["QUANTITY"],l_temp_dict["STATUS"]]
 			else:
 				l_consumption_history[l_date] = [l_temp_dict["SCALE_ID"],l_temp_dict["TIME"],"%.2f"%l_temp_dict["QUANTITY"],l_temp_dict["STATUS"]]				
-		l_temp_dict = ibm_db.fetch_assoc(l_db_statement)
-	print l_refill_history, l_consumption_history
+		try:
+			l_temp_dict = ibm_db.fetch_assoc(l_db_statement)
+		except Exception as e:
+			logging.debug("appHistoricalGraph_twodatequery fetch_ERROR : " + str(e))
+
 	pubnub.publish(channel="kitchenApp-refillHistory", message=l_refill_history)
 	pubnub.publish(channel="kitchenApp-consumptionHistory", message=l_consumption_history)
 	
@@ -334,7 +369,6 @@ def appUpdate(p_requester):
 	if p_requester == "APP":
 		#Initial Data to be updated with the app
 		if(len(g_containerSettings) > 0):
-			print g_containerMessage
 			pubnub.publish(channel="kitchenApp-resp", message=g_containerMessage)
 		else:
 			pass
@@ -384,7 +418,6 @@ Parameters 		:	message - error message
 
 ****************************************************************************************'''
 def error(message):
-	pass
     logging.debug("ERROR : " + str(message))
 
 '''****************************************************************************************
