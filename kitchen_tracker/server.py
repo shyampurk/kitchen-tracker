@@ -200,7 +200,7 @@ def appReset(p_requester,p_containerid):
 '''****************************************************************************************
 
 Function Name 		:	updateCurrentStatus
-Description		:	Updates the Refill/Consumed Data to the Database
+Description		:	Updates the Refill/Consumed Data to the Database and the APP
 Parameters 		:	p_currentDate - Present date uploaded on DB
 					p_containerid - Container ID which should be updated
 					p_status - Refill / Consumed
