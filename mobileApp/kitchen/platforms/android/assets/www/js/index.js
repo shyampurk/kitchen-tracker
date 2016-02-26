@@ -19,13 +19,6 @@ var app = {
 ****************************************************************************************************/ 
     initialize: function() {
         this.bindEvents();
-		// document.getElementById("#button1").disabled = true;
-  //       document.getElementById("button2").disabled = true;
-  //       document.getElementById("transactionHistory2").disabled = true;
-  //       document.getElementById("transactionHistory1").disabled = true;
-        // $(window).on("navigate", function (event, data) {          
-        //     event.preventDefault();      
-        // })
     },
 /**************************************************************************************************
     FUNCTION NAME : bindEvents()
@@ -124,7 +117,7 @@ var app = {
             var color_black = "#000000";
             var color_lightorange ="#ffdab9";
             $containerItem = $(p_container);
-            if (parseInt(p_expiry) <= 1){
+            if (parseInt(p_expiry) < 1){
                 $(p_rect1,$containerItem).attr('style',"fill:"+color_red)
                 $(p_rect2,$containerItem).attr('style',"fill:"+color_red)
                 $(p_rect3,$containerItem).attr('style',"fill:"+color_red)
@@ -286,17 +279,17 @@ var app = {
 	                if(i == 0) m = p_message[i];
 	                else if(i == 1) n = p_message[i];
 	            }
+	            k = Object.keys(m).sort()
+	            l = Object.keys(n).sort()
 	            for(var i = Object.keys(m).length - 1; i >= 0; i--){
-	                var data = Object.keys(m)[i]
-	                var data1 = Object.keys(n)[i]
-	                historyTable += '<tr><th>'+ data + '</th><td><b class="ui-table-cell-label">ITEM ID</b>' + p_containerName + 
-		                '</td><td><b class="ui-table-cell-label">TIME</b>' + m[data][1].toString() + 
+	                historyTable += '<tr><th>'+ k[i] + '</th><td><b class="ui-table-cell-label">ITEM ID</b>' + p_containerName + 
+		                '</td><td><b class="ui-table-cell-label">TIME</b>' + m[k[i]][1].toString() + 
 		                '</td><td><b class="ui-table-cell-label">STATUS</b>' + "REFILLED" + 
-		                '</td><td><b class="ui-table-cell-label">REFILLED</b>' + m[data][2].toString() + 
-		                ' KGS</td><th>'+ data1 + '</th><td><b class="ui-table-cell-label">ITEM</b>' + p_containerName + 
-		                '</td><td><b class="ui-table-cell-label">TIME</b>' + n[data1][1].toString() + 
+		                '</td><td><b class="ui-table-cell-label">REFILLED</b>' + m[k[i]][2].toString() + 
+		                ' KGS</td><th>'+ l[i] + '</th><td><b class="ui-table-cell-label">ITEM</b>' + p_containerName + 
+		                '</td><td><b class="ui-table-cell-label">TIME</b>' + n[l[i]][1].toString() + 
 		                '</td><td><b class="ui-table-cell-label">STATUS</b>' + "CONSUMED" + 
-		                '</td><td><b class="ui-table-cell-label">CONSUMED</b>' + n[data1][2].toString() + ' KGS</td></tr>';
+		                '</td><td><b class="ui-table-cell-label">CONSUMED</b>' + n[l[i]][2].toString() + ' KGS</td></tr>';
 	            }
 	            historyTable += '</tbody>'
 	            $('#transTable').html(historyTable);
@@ -345,18 +338,17 @@ var app = {
         pubnub.subscribe({
             channel: "kitchenApp-refillHistory",
             message: function(message){
+            	var sortMessage = Object.keys(message).sort();
                 if(message[Object.keys(message)[0]][0] == "001"){
                 	container_history_1.push(message);
-                	for(var i = 0; i < Object.keys(message).length ; i++){
-                    	var datal = Object.keys(message)[i]
-                    	refill_1[i] = (message[datal][2]);
+                	for(var i = Object.keys(message).length - 1,j=0; i > 0,j< Object.keys(message).length; j++,i--){
+                    	refill_1[j] = (message[sortMessage[i]][2]);
                 	}
                 }
                 else{
                 	container_history_2.push(message);
-                	for(var i = 0; i < Object.keys(message).length ; i++){
-                    	var datal = Object.keys(message)[i]
-                    	refill_2[i] = (message[datal][2]);
+                	for(var i = Object.keys(message).length - 1,j=0; i > 0,j< Object.keys(message).length; j++,i--){
+                    	refill_2[j] = (message[sortMessage[i]][2]);
                 	}	
                 }
             }
@@ -364,18 +356,17 @@ var app = {
         pubnub.subscribe({
             channel: "kitchenApp-consumptionHistory",
             message: function(message){
+            	var sortMessage = Object.keys(message).sort();
                 if(message[Object.keys(message)[0]][0] == "001"){
                 	container_history_1.push(message);
-                	for(var i = 0; i < Object.keys(message).length ; i++){
-                    	var datal = Object.keys(message)[i];
-                    	consumption_1[i] = (message[datal][2]);
+                	for(var i = Object.keys(message).length - 1,j=0; i > 0,j< Object.keys(message).length; j++,i--){
+                    	consumption_1[j] = (message[sortMessage[i]][2]);
                 	}
                 }
                 else{
                 	container_history_2.push(message);
-                	for(var i = 0; i < Object.keys(message).length ; i++){
-                    	var datal = Object.keys(message)[i]
-                    	consumption_2[i] = (message[datal][2]);
+                	for(var i = Object.keys(message).length - 1,j=0; i > 0,j< Object.keys(message).length; j++,i--){
+                    	consumption_2[j] = (message[sortMessage[i]][2]);
                 	}	
                 }
             }
