@@ -1,18 +1,18 @@
 ***************************
-SMART KITCHEN TRACKER 
+#KITCHEN INVENTORY TRACKER 
 ***************************
 
-Steps to Build the Project 
+##Steps to Build the Project 
 ---------------------------
 
-Hardware Requirements:
+##Hardware Requirements:
 -----------------------
 
 	-	Arduino UNO
 	-	Load Cells
 	-	HX711 Load Cell Amplifier 
 	-	HM - 10 BLE Module
-	-	Linkit One HDK
+	-	Mediatek Linkit One HDK
 
 Installation of the Softwares and Drivers Required
 ----------------------------------------------------
