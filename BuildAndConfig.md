@@ -7,15 +7,15 @@
 
 ##Hardware Requirements:
 -----------------------
-The list of hardware components if this project is as follows
+The list of hardware components for this project are as follows
 
-	-	Arduino UNO
-	-	Load Cells
+	-	Arduino UNO board
+	-	YXC-133 Load Cell (2 nos)
 	-	HX711 Load Cell Amplifier 
 	-	HM - 10 BLE Module
 	-	Mediatek Linkit One HDK
 
-Refer to the [schematic diagram](Schematic.png) for teh hardware setup
+Refer to the [schematic diagram](Schematic.png) for the hardware setup and pin connections
 
 ##Software Requirements :
 The following software and driver packages need to be installed in the build system. 
@@ -25,6 +25,7 @@ The following software and driver packages need to be installed in the build sys
 	- 	LinkIt One SDK
 	- 	USB COM Port Driver
 	- 	USB to Serial Driver  
+
 
 ##Installation of the Software/Drivers
 
@@ -62,17 +63,19 @@ Step 2: Download the USB COM port driver for the LinkIt ONE Development Board
 		1.	Extract the content of the USB COM port driver zip file you downloaded.
 	    	2.	Run the installer InstallMTKUSBCOMPortDriver.exe and follow the instructions.
 
-Step 3 : Download and install Windows USB to Serial driver by downloading and unzipping the [package](tools/CP210x_Windows_Drivers.zip) and running CP210xVCPInstaller_x64.exe or CP210xVCPInstaller_x86.exe ( for 64 bit or 32 bit OS ) installer binary.
+Step 3 : Download and install Windows USB to Serial driver by downloading and unzipping this [package](tools/CP210x_Windows_Drivers.zip) and running CP210xVCPInstaller_x64.exe or CP210xVCPInstaller_x86.exe ( for 64 bit or 32 bit OS ) installer binary.
 
 
-You now have all the hardware and software you need to get started.
+##Installation of Linkit ONE SDK on Arduino IDE
+One all the requisite softwares and drivers are installed , you can configure Arduino IDE to install Linkit ONE SDK by following the steps below.
 
     -	Start Arduino and open Preferences window.
     -	Enter http://download.labs.mediatek.com/package_mtk_linkit_index.json into Additional Board 
     	Manager URLs field. 
-    -	You can add multiple URLs, separating them with commas.
-    -	Open Boards Manager from Tools > Boards > Board Manager and install Linkit One SDK
-    -	Make sure you have installed the boards by finding linkit on Tools > Boards > LinkitOne
+    -	Open Boards Manager from Tools > Boards > Board Manager. This will open the "Boards Manager" window
+    -	On the "Boards Manager" window, scroll down and search for LinkIt ONE entry. Select it and click on install button.
+    -	Wait for the Link IT ONE SDK to be downloaded. THis may take some time.
+    -	Once installed, make sure you have emabled the LinkIt ONE board by selecting "LinkIt ONE" from Tools > Boards menu.
 
 PREREQUISITE:
 --------------
