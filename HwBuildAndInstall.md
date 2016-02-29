@@ -121,36 +121,46 @@ Step 4 : Update firmware as follows
 ### Upgrade and Build Application Software:
 
 #### Prerequisites
+
 Step 1 : Clone this repository into the build system.
+
 Step 2 : Sign up for [PubNub](www.pubnub.com) subscription and get your PubNub publish and subscribe keys
+
 Step 3 : Make sure you have connected WiFi/Bluetooth Antenna to the Linkit One Board
+
 Step 4 : Follow the [schematic diagram](Schematic.png) and build the circuit.
+
 Step 5 : Power up the LinkIt ONE and Arduino Uno board through the USB port on the build system. 
 
 #### Build & Install application software on LinkIt ONE
+
 Step 1 - Update the Firmware for the Linkit One by following this official link
 
 	http://labs.mediatek.com/site/global/developer_tools/mediatek_linkit/get-started/windows_os_stream/update_firmware/index.gsp
 
 Step 2 : Perform the following steps to build and load the the application on LinkIt ONE 
 
-	-	Open the application [source code](linkitble/pubnub_linkit/pubnub_linkit.ino) using Arduino IDE
-	-	Open the [config header file](linkitble/pubnub_linkit/settings.h) and update your pubnub keys (pubkey and subkey), local WIFI Router SSID, password and auth type (WIFI_AP , WIFI_PASSWORD , WIFI_AUTH).
-	-	Select Tools > Boards > Linkit One
-	-	Check for the debug port on the Windows Control Panel's Device Manager > COM Ports > COMxx(DEBUG)
-	-	To Upload the code, select the DEBUG COM Port at Tools > Port > (COMxx PORT)
-	- 	Compile the code under Arduino IDE and Upload to LinkIt ONE by clicking the upload button.
+- Open the application [source code](linkitble/pubnub_linkit/pubnub_linkit.ino) using Arduino IDE
+- Open the [config header file](linkitble/pubnub_linkit/settings.h) and update your pubnub keys (pubkey and subkey), local WIFI Router SSID, password and auth type (WIFI_AP , WIFI_PASSWORD , WIFI_AUTH).
+- Select Tools > Boards > Linkit One
+- Check for the debug port on the Windows Control Panel's Device Manager > COM Ports > COMxx(DEBUG)
+- To Upload the code, select the DEBUG COM Port at Tools > Port > (COMxx PORT)
+- Compile the code under Arduino IDE and Upload to LinkIt ONE by clicking the upload button.
 	
 
 #### Build & Install application software on Arduino Uno
 
 Before installing the application software on Arduino UNO, calibration of the load cells must be performed to sense the weight accurately. Perform the [calibration steps](Calibrate.md) to calibrate the load cells and then proceed as below
 
-	-	Install the [HX711](library/HX711.zip) library in Adruino IDE
-	-	Open the application [source code](/hardware/bleHM10/bleHM10.ino) using Arduino IDE
-	-	Select Tools > Boards > Arduino UNO
-	-	Select the COM Port ( the USB port mapped COM port to which the Arduino Uno is connected )  at Tools > Port > (COM PORT)
-	- 	Compile the code under Arduino IDE and Upload to Arduino Uno
+Step 1 : Install the [HX711](library/HX711.zip) library in Adruino IDE
+
+Step 2 : Open the application [source code](/hardware/bleHM10/bleHM10.ino) using Arduino IDE
+
+Step 3 : Select Tools > Boards > Arduino UNO
+
+Step 4 : Select the COM Port ( the USB port mapped COM port to which the Arduino Uno is connected )  at Tools > Port > (COM PORT)
+
+Step 5 : Compile the code under Arduino IDE and Upload to Arduino Uno
 	
 
 
