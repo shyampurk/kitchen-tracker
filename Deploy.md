@@ -84,7 +84,9 @@ Step 3 - Open the manifest file and update the follwing entries
 
 Step 4 - Login to Bluemix console via cf tool and select the space.
 
-Step 5 - Change directory to the server application root under the cloned github repository.
+Step 5 - Change directory to the server application root (kitchen-tracker) under the cloned github repository.
 
-Step 6 - Run 'cf push' 
+Step 6 - Run the following command to push the application code 
+
+		'cf push' 
 
