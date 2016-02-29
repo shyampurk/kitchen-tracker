@@ -33,10 +33,10 @@ The following software and driver packages need to be installed in the build sys
 1. Before proceeding with the software installation, make sure to disable driver signing check on Windows 7 to allow third party drivers ( non Microsoft) to be installed. This option is available as part of advanced boot option which can be brought up during windows 7 boot time by pressing F8 key ( Shift Key for Windows 8)
 2. Disable Automatic Driver Installation on Windows OS. The automatic download and installation of device drivers can prevent proper installation of the LinkIt ONE USB COM port driver on Windows 7 machines. If you’ve already disabled the automatic installation of device drivers, you can skip this step, otherwise:
 
-	- Open Control Panel and search for and open Change device installation settings.
-	- In Device Installation Settings select "No, let me choose what to do" option, then click "Never install driver software from Windows Update". 
-	- Also make sure to uncheck "Automatically get the device application and information provided by your device manufacturer".
-	- Click "Save Changes" and exit the control panel.
+	- Open Control Panel and search for and open "Change Device Installation Settings" dialog box.
+	- In the dialog box, select "No, let me choose what to do" option, then click "Never install driver software from Windows Update" option. 
+	- Also if visible under Windows 7/8/10, make sure to uncheck "Automatically get the device application and information provided by your device manufacturer" option.
+	- Click "Save Changes" to save the settings and exit the "Change Device Installation Settings" dialog box and the control panel.
 	 
 
 ###Install Arduino IDE & Drivers
@@ -48,7 +48,7 @@ Installing the Arduino IDE SDK
 	- 	Download the Arduino IDE 1.6.6 [Recommeded for LINKIT]
 		
 			The Arduino IDE provides your coding environment and is used for monitoring the 
-		development board. The LinkIt ONE SDK is compatible with Arduino IDE version 1.6.6.
+		development board. Currently, the LinkIt ONE SDK is compatible with Arduino IDE version 1.6.6.
 
 			[https://www.arduino.cc/en/Main/OldSoftwareReleases#previous]
 
@@ -67,14 +67,14 @@ Step 3 : Download and install Windows USB to Serial driver by downloading and un
 
 
 ##Installation of Linkit ONE SDK on Arduino IDE
-One all the requisite softwares and drivers are installed , you can configure Arduino IDE to install Linkit ONE SDK by following the steps below.
+Once all the requisite softwares and drivers are installed , you can configure Arduino IDE to install Linkit ONE SDK by following the steps below.
 
-    -	Start Arduino and open Preferences window.
-    -	Enter http://download.labs.mediatek.com/package_mtk_linkit_index.json into Additional Board 
+    -	Start Arduino IDE and open File > Preferences window.
+    -	Under teh Settings tab, enter http://download.labs.mediatek.com/package_mtk_linkit_index.json into Additional Board 
     	Manager URLs field. 
     -	Open Boards Manager from Tools > Boards > Board Manager. This will open the "Boards Manager" window
     -	On the "Boards Manager" window, scroll down and search for LinkIt ONE entry. Select it and click on install button.
-    -	Wait for the Link IT ONE SDK to be downloaded. THis may take some time.
+    -	Wait for the Link IT ONE SDK to be downloaded. This may take some time.
     -	Once installed, make sure you have emabled the LinkIt ONE board by selecting "LinkIt ONE" from Tools > Boards menu.
 
 
@@ -82,13 +82,14 @@ One all the requisite softwares and drivers are installed , you can configure Ar
 
 ### Firmware update for HM-10 BLE Module
 
-Step 1: Update the Firmware for the HM-10 BLE Moulde by following link
+Step 1: Update the Firmware for the HM-10 BLE Moulde by following link. Before performing the update, you also have connect the BLE module hardware to FTDI breakout board.   
 
 			https://suryaigor.wordpress.com/2016/02/05/upgrading-firmware-to-hm-10-cc2541-ble-4-0/
+	
+	
 
 
-
-### Upgrade and Build LINKIT ONE:
+### Upgrade and Build Application Software:
 --------------------------------
 
 #### Prerequisites
@@ -112,7 +113,7 @@ Step 2 : Perform the following steps to build and load the the application on Li
 	- 	Compile the code under Arduino IDE and Upload to LinkIt ONE by clicking the upload button.
 	
 
-#### Build & Install application software on LinkIt ONE
+#### Build & Install application software on Arduino Uno
 -------------------------
 
 	-	Install the [HX711](library/HX711.zip) library in Adruino IDE
