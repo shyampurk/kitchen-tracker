@@ -22,6 +22,7 @@ The following software and driver packages need to be installed in the build sys
 
 	- 	OS : Windows 7/8 or OSX. ( The steps provided below are for Windows 7. Linkit ONE officially supports Windows & MAC Operating Systems only)
 	- 	Arduino IDE
+	- 	LinkIt One SDK
 	- 	USB COM Port Driver
 	- 	USB to Serial Driver  
 
@@ -37,9 +38,9 @@ The following software and driver packages need to be installed in the build sys
 	- Click "Save Changes" and exit the control panel.
 	 
 
-###Install Arduino IDE	
+###Install Arduino IDE & Drivers
 ----------------------------------------------------
-Step 1: Setting up the Arduino IDE to Program the Arduino UNO and Linkit One
+Step 1: Setup the Arduino IDE to Program the Arduino UNO and Linkit One
 
 Installing the Arduino IDE SDK
 
@@ -50,17 +51,8 @@ Installing the Arduino IDE SDK
 
 			[https://www.arduino.cc/en/Main/OldSoftwareReleases#previous]
 
-Step 2: Disable Automatic Driver Installation on Windows OS
 
-		The automatic download and installation of device drivers can prevent proper installation of the LinkIt ONE USB COM port driver on Windows 7, 8 and 10 machines. If you’ve already disabled the automatic installation of device drivers, you can skip this step, otherwise:
-
-    -	Open Control Panel and search for and open Change device installation settings.
-    
-    	In Device Installation Settings select No, let me choose what to do, then click Never install driver software from Windows Update
-
-    	Also make sure to uncheck Automatically get the device application and information provided by your device manufacturer.
-
-Step 3: Download the USB COM port driver for the LinkIt ONE Development Board
+Step 2: Download the USB COM port driver for the LinkIt ONE Development Board
 
 	- 	A USB COM port driver is required for the LinkIt ONE SDK installation, get it here.
 
@@ -68,7 +60,9 @@ Step 3: Download the USB COM port driver for the LinkIt ONE Development Board
 
 
 		1.	Extract the content of the USB COM port driver zip file you downloaded.
-	    2.	Run the installer InstallMTKUSBCOMPortDriver.exe and follow the instructions.
+	    	2.	Run the installer InstallMTKUSBCOMPortDriver.exe and follow the instructions.
+
+Step 3 : Download and install Windows USB to Serial driver by downloading and unzipping the [package](tools/CP210x_Windows_Drivers.zip) and running CP210xVCPInstaller_x64.exe or CP210xVCPInstaller_x86.exe ( for 64 bit or 32 bit OS ) installer binary.
 
 
 You now have all the hardware and software you need to get started.
