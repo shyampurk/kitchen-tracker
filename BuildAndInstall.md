@@ -2,7 +2,7 @@
 #KITCHEN INVENTORY TRACKER 
 ***************************
 
-##Steps to Build the Project 
+##Steps for building the project hardware 
 ---------------------------
 
 ##Hardware Requirements:
@@ -12,7 +12,7 @@ The list of hardware components for this project are as follows
 	-	Arduino UNO board
 	-	YXC-133 Load Cell (2 nos)
 	-	HX711 Load Cell Amplifier 
-	-	HM - 10 BLE Module
+	-	HM - 10 BLE Module ( along with FTDI breakout board, for firmware upgrade only)
 	-	Mediatek Linkit One HDK
 	-	FTDI USB to Serial Converter Module
 
@@ -33,19 +33,19 @@ The following software and driver packages need to be installed in the build sys
 ### Prerequisites
 Step 1: Before proceeding with the software installation, make sure to disable driver signing check on Windows 7 to allow third party drivers ( non Microsoft) to be installed. 
 
-##For Windows 7 
+		For Windows 7 
 	
-	- This option is available as part of advanced boot option which can be brought up during windows 7 boot time by pressing F8 key
+		- This option is available as part of advanced boot option which can be brought up during windows 7 boot time by pressing F8 key
 	
-##For Windows 8/8.1/10
+		For Windows 8/8.1/10
 
-	- Hold down the Windows key on your keyboard and press the letter C to open the Charm menu, then click the gear icon (Settings).
-	- Click More PC Settings -> Click General -> Under Advanced Startup, click Restart Now.
+		- Hold down the Windows key on your keyboard and press the letter C to open the Charm menu, then click the gear icon (Settings).
+		- Click More PC Settings -> Click General -> Under Advanced Startup, click Restart Now.
 
-NOTE: In Windows 8.1, the ‘Restart Now’ button has moved to ‘PC Setting -> Update & Recovery -> Recovery.
+		NOTE: In Windows 8.1, the ‘Restart Now’ button has moved to ‘PC Setting -> Update & Recovery -> Recovery.
 
-	- After restarting, click Troubleshoot -> Click Advanced Options -> Click Windows Startup Settings -> Click Restart
-	- After restarting your computer a second time, choose Disable driver signature enforcement from the list by typing the number 7 on your keyboard.Your computer will restart automatically.
+		- After restarting, click Troubleshoot -> Click Advanced Options -> Click Windows Startup Settings -> Click Restart
+		- After restarting your computer a second time, choose Disable driver signature enforcement from the list by typing the number 7 on your keyboard.Your computer will restart automatically.
 	
 Step 2: Once you disable Automatic Driver Installation on Windows OS. The automatic download and installation of device drivers can prevent proper installation of the LinkIt ONE USB COM port driver on Windows 7 machines. If you’ve already disabled the automatic installation of device drivers, you can skip this step, otherwise:
 
@@ -59,11 +59,7 @@ Step 2: Once you disable Automatic Driver Installation on Windows OS. The automa
 ----------------------------------------------------
 Step 1: Setup the Arduino IDE to Program the Arduino UNO and Linkit One
 
-Installing the Arduino IDE SDK
-
-	- 	Download the Arduino IDE 1.6.6 [Recommeded for LINKIT]
-		
-The Arduino IDE provides your coding environment and is used for monitoring the development board. Currently, the LinkIt ONE SDK is compatible with Arduino IDE version 1.6.6. Download Arduino IDE from this [Link](https://www.arduino.cc/en/Main/OldSoftwareReleases#previous)
+The Arduino IDE provides your coding environment and is used for monitoring the development board. Currently, the LinkIt ONE SDK is compatible with Arduino IDE version 1.6.6 [Recommeded for LINKIT]. Download Arduino IDE from this [Link](https://www.arduino.cc/en/Main/OldSoftwareReleases#previous)
 
 
 Step 2: Download the USB COM port driver for the LinkIt ONE Development Board
@@ -80,11 +76,10 @@ Step 3 : Download and install Windows USB to Serial driver by downloading and un
 Once all the requisite softwares and drivers are installed , you can configure Arduino IDE to install Linkit ONE SDK by following the steps below.
 
     -	Start Arduino IDE and open File > Preferences window.
-    -	Under teh Settings tab, enter http://download.labs.mediatek.com/package_mtk_linkit_index.json into Additional Board 
-    	Manager URLs field. 
+    -	Under the Settings tab, enter the string (without quotes) "http://download.labs.mediatek.com/package_mtk_linkit_index.json" into Additional Board Manager URLs field. 
     -	Open Boards Manager from Tools > Boards > Board Manager. This will open the "Boards Manager" window
     -	On the "Boards Manager" window, scroll down and search for LinkIt ONE entry. Select it and click on install button.
-    -	Wait for the Link IT ONE SDK to be downloaded. This may take some time.
+    -	Wait for the Link IT ONE SDK to be downloaded and installed under the Arduino IDE. This may take some time.
     -	Once installed, make sure you have emabled the LinkIt ONE board by selecting "LinkIt ONE" from Tools > Boards menu.
 
 
@@ -92,41 +87,37 @@ Once all the requisite softwares and drivers are installed , you can configure A
 
 ### Firmware update for HM-10 BLE Module
 
-Step 1: Update the Firmware for the HM-10 BLE Moulde by following link. Before performing the update, you also have connect the BLE module hardware to FTDI breakout board.   
+Step 1 : Extract the firmware and tools from this [package](tools/BLE_HM10_FirmwareTool.rar)
 
-###Prerequisites 
-
-	- Extract from [here](tools/BLE_HM10_FirmwareTool.rar)
+	- This package containes the following files
         	-- HMComAssistant.exe
 	   		-- HMSoft.exe
 	 		-- HMSoft.bin
 
-###Setting up the Connection with HM-10 Module and FTDI Chip
+Step 2 : For performing the firmware update, the BLE module hardware has to be connected to FTDI breakout board. Setup the Connection with HM-10 Module and FTDI Chip as follows
 
 	- Connect the HM-10 CC2541 BLE module to the FTDI Breakout Board as shown in the [schematic](FTDIandHM-10.png)
 	- Check the COM Port of the FTDI board connected to the PC on Device Manager
-	- If COM Port is not deducted, upgrade the drivers using following link
+	- If COM Port is not deducted, upgrade the drivers using following link [FTDI Driver Link](http://www.ftdichip.com/Drivers/D2XX.htm). 
 	    
-If you are using FTDI Board, follow this [FTDI Driver Link](http://www.ftdichip.com/Drivers/D2XX.htm)
-If you are using CP2102 Board, follow this [CP2102 Driver Link](https://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
 
-###Setting up the HM-10 module to Firmware upgrading mode
+Step 3 : Coonect to HM-10 BLE module and set it up for firmware update as follows
 
-Step 1: Launch the HMComAssistant form the downloaded folder on your PC
-Step 2: Select the COM Port on the HMComAssistant
-Step 3: On HMComAssistant click Open Port
-Step 4: Enter AT command on the text box and Click SEND button
-Step 5: If HM-10 responds with OK then module connection is made correctly, if not check the connections made.
-Step 6: To pull the module to upgrading mode, Send AT+SBLUP commad.
-Step 7: If module responds with OK+SBLUP, then we are ready to upgrade the firmware.
+		- Launch the HMComAssistant.exe form the downloaded folder on your PC
+		- Select the COM Port on the HMComAssistant
+		- On HMComAssistant click Open Port
+		- Enter AT command on the text box and Click SEND button
+		- If HM-10 responds with OK then module connection is made correctly, if not check the connections made.
+		- To pull the module to upgrading mode, Send AT+SBLUP commad.
+		- If module responds with OK+SBLUP, then we are ready to upgrade the firmware.
 
-###Steps to Upgrade Firmware
+Step 4 : Update firmware as follows
 
-Step 1: Launch the HMSoft.exe executable file on the downloaded folder
-Step 2: Select the firmware image from the downloaded folder [HMSoft.bin]
-Step 3: Enter the right COM Port number on COM Port
-Step 4: Click on Load Image button to start burning the firmware to the HM-10 BLE module
-Step 5: Wait for the pop-up Download Completed Successfully
+		- Launch the HMSoft.exe executable file on the downloaded folder
+		- Select the firmware image from the downloaded folder [HMSoft.bin]
+		- Enter the right COM Port number on COM Port
+		- Click on Load Image button to start burning the firmware to the HM-10 BLE module
+		- Wait for the pop-up Download Completed Successfully
 
 ### Upgrade and Build Application Software:
 
