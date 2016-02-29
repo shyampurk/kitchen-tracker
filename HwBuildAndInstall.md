@@ -97,7 +97,7 @@ Step 2 : For performing the firmware update, the BLE module hardware has to be c
 
 	- Connect the HM-10 CC2541 BLE module to the FTDI Breakout Board as shown in the [schematic](FTDIandHM-10.png)
 	- Check the COM Port of the FTDI board connected to the PC on Device Manager
-	- If COM Port is not deducted, upgrade the drivers using following link [FTDI Driver Link](http://www.ftdichip.com/Drivers/D2XX.htm). 
+	- If COM Port is not detected, upgrade the drivers using following link [FTDI Driver Link](http://www.ftdichip.com/Drivers/D2XX.htm). 
 	    
 
 Step 3 : Connect to HM-10 BLE module and set it up for firmware update as follows
