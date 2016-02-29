@@ -2,10 +2,11 @@
 
 ##Prerequisites
 
-    - You should have a valid IBM account and 
+    - You should have a valid IBM account
     - You should have a Bluemix subscription and access to your BLuemix dashboard with atleast one space created
     - You should have the cloudfoundry command line tool installed
     (https://github.com/cloudfoundry/cli/releases)
+    - You should have a PubNub subscription
 
 ## Deploying DashDB Service
 
@@ -29,7 +30,7 @@ Step 4: After creation of the service, go back to dashboard
 
 Step 5: In the Side Menu under the Connect -> Connection information, 
 		
-		You can see your dashDB Host name,Database name,user id,pwd.
+	You can see your dashDB Host name,Database name,user id,pwd.
 
         Make a note of Host Name, Port Number , Database Name, User ID and Password.
 
@@ -47,5 +48,43 @@ Step 6: In the Side Main Menu click Tables,Here you can create the table for thi
 
 
 
-step 7: Then click the button "Run DDL".
+Step 7: Then click the button "Run DDL".
 		You can see the newly created table by selecting your schema and table name. Your schema is same as your username as displayed in Connect > Connection Information menu.
+
+
+## Deploying the Application Server
+
+Step 1 - Clone this github repository
+
+Step 2 - Update the parameters in the [config.ini](kitchen_tracker/config.ini)
+
+	pub_key = PubNub Publish Key
+	sub_key = PubNub Subscribe Key
+	db_schema = User ID of the DashDB instance , in caps
+	db_name = Database name
+	db_host = Host Name
+	table_name = Table name is set to KITCHENTRACKERAPP
+	username = User ID of the DashDB instance
+	pwd = Password of dashDB instance
+	port = Port Number
+	
+
+Step 3 - Open the manifest file and update the follwing entries
+
+		applicationa:
+			- name : <name of the application on server>
+	
+		services
+			- <dashdb instance name>
+
+		where 
+			<name of the application on server> - Any desired name for the application
+			<dashdb instance name> - name of the dashdb service instance that you have created in the previous section.
+
+
+Step 4 - Login to Bluemix console via cf tool and select the space.
+
+Step 5 - Change directory to the server application root under the cloned github repository.
+
+Step 6 - Run 'cf push' 
+
