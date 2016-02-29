@@ -77,8 +77,10 @@ One all the requisite softwares and drivers are installed , you can configure Ar
     -	Wait for the Link IT ONE SDK to be downloaded. THis may take some time.
     -	Once installed, make sure you have emabled the LinkIt ONE board by selecting "LinkIt ONE" from Tools > Boards menu.
 
-PREREQUISITE:
---------------
+
+##Build Procedure for Hardware Components
+
+### Firmware update for HM-10 BLE Module
 
 Step 1: Update the Firmware for the HM-10 BLE Moulde by following link
 
@@ -86,25 +88,17 @@ Step 1: Update the Firmware for the HM-10 BLE Moulde by following link
 
 Step 2:	Make sure you have connected WiFi/Bluetooth Antenna to the Linkit One Board
 
-UPGRADING LINKIT ONE:
----------------------
 
+### Upgrade and Build LINKIT ONE:
+--------------------------------
 
+Step 1 - Update the Firmware for the Linkit One by following this official link
 
+	http://labs.mediatek.com/site/global/developer_tools/mediatek_linkit/get-started/windows_os_stream/update_firmware/index.gsp
 
-Sensor-Controller Build 
--------------------------
+Step 2 : Make sure you have connected WiFi/Bluetooth Antenna to the Linkit One Board
 
-	-	Follow the schematic and build the circuit with the LOAD CELL, Amplifier and Arduino UNO 
-	- 	GIT CLONE the Github Repo form following link
-	-	Open the (git_repo)/hardware/bleHM10/bleHM10.ino using Arduino IDE
-	-	Select Tools > Boards > Arduino UNO
-	-	Select the COM Port at Tools > Port > (COM PORT)
-	- 	Compile and Upload the code to the Arduino IDE
-
-Linkit-PubNub Build
---------------------
-
+Step 3 : Perform the following steps to build and load the the application on LinkIt ONE 
 	-	Open the (git_repo)/linkitble/pubnub_linkit/pubnub_linkit.ino using Arduino IDE
 	-	Open the (git_repo)/linkitble/pubnub_linkit/settings.h
 	- 	Modify with your Pubnub KEYS, local WIFI Router SSID and PASSWORD
@@ -113,3 +107,18 @@ Linkit-PubNub Build
 	-	To Uplod the Script, select the DEBUG COM Port at Tools > Port > (COMxx PORT)
 	- 	Compile and Upload the code to the Arduino IDE by clicking the upload button.
 	
+
+
+
+### Upgrade and Build Arduino Uno 
+-------------------------
+
+	-	Follow the schematic and build the circuit with the LOAD CELL, Amplifier and Arduino UNO 
+	- 	GIT CLONE the Github Repo form following link
+	- 	Install HX711.zip library in Adruino IDE
+	-	Open the (git_repo)/hardware/bleHM10/bleHM10.ino using Arduino IDE
+	-	Select Tools > Boards > Arduino UNO
+	-	Select the COM Port at Tools > Port > (COM PORT)
+	- 	Compile and Upload the code to the Arduino IDE
+
+
