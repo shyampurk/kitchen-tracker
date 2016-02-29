@@ -5,7 +5,7 @@
 ---------------------------
 
 ##Hardware Requirements:
------------------------
+
 The list of hardware components for this project are as follows
 
 	-	Arduino UNO board
