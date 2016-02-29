@@ -14,6 +14,7 @@ The list of hardware components for this project are as follows
 	-	HX711 Load Cell Amplifier 
 	-	HM - 10 BLE Module
 	-	Mediatek Linkit One HDK
+	-	FTDI USB to Serial Converter Module
 
 Refer to the [schematic diagram](Schematic.png) for the hardware setup and pin connections
 
@@ -30,7 +31,7 @@ The following software and driver packages need to be installed in the build sys
 ##Installation of the Software/Drivers
 
 ### Prerequisites
-1. Before proceeding with the software installation, make sure to disable driver signing check on Windows 7 to allow third party drivers ( non Microsoft) to be installed. 
+Step 1: Before proceeding with the software installation, make sure to disable driver signing check on Windows 7 to allow third party drivers ( non Microsoft) to be installed. 
 
 ##For Windows 7 
 	
@@ -46,7 +47,7 @@ NOTE: In Windows 8.1, the ‘Restart Now’ button has moved to ‘PC Setting ->
 	- After restarting, click Troubleshoot -> Click Advanced Options -> Click Windows Startup Settings -> Click Restart
 	- After restarting your computer a second time, choose Disable driver signature enforcement from the list by typing the number 7 on your keyboard.Your computer will restart automatically.
 	
-2. Once you disable Automatic Driver Installation on Windows OS. The automatic download and installation of device drivers can prevent proper installation of the LinkIt ONE USB COM port driver on Windows 7 machines. If you’ve already disabled the automatic installation of device drivers, you can skip this step, otherwise:
+Step 2: Once you disable Automatic Driver Installation on Windows OS. The automatic download and installation of device drivers can prevent proper installation of the LinkIt ONE USB COM port driver on Windows 7 machines. If you’ve already disabled the automatic installation of device drivers, you can skip this step, otherwise:
 
 	- Open Control Panel and search for and open "Change Device Installation Settings" dialog box.
 	- In the dialog box, select "No, let me choose what to do" option, then click "Never install driver software from Windows Update" option. 
@@ -76,7 +77,7 @@ Step 2: Download the USB COM port driver for the LinkIt ONE Development Board
 
 
 		1.	Extract the content of the USB COM port driver zip file you downloaded.
-	    	2.	Run the installer InstallMTKUSBCOMPortDriver.exe and follow the instructions.
+		2.	Run the installer InstallMTKUSBCOMPortDriver.exe and follow the instructions.
 
 Step 3 : Download and install Windows USB to Serial driver by downloading and unzipping this [package](tools/CP210x_Windows_Drivers.zip) and running CP210xVCPInstaller_x64.exe or CP210xVCPInstaller_x86.exe ( for 64 bit or 32 bit OS ) installer binary.
 
@@ -99,24 +100,23 @@ Once all the requisite softwares and drivers are installed , you can configure A
 
 Step 1: Update the Firmware for the HM-10 BLE Moulde by following link. Before performing the update, you also have connect the BLE module hardware to FTDI breakout board.   
 
-#PREREQUISITES 
+###Prerequisites 
 
 	- Extract from [here](tools/BLE_HM10_FirmwareTool.rar)
         	-- HMComAssistant.exe
 	   	-- HMSoft.exe
 	 	-- HMSoft.bin
-    	- HM-10 CC2541 BLE Module
-    	- FTDI USB to Serial Converter Module
 
-#Setting up the Connection with HM-10 Module and FTDI Chip
+###Setting up the Connection with HM-10 Module and FTDI Chip
 
 	- Connect the HM-10 CC2541 BLE module to the FTDI Breakout Board as shown in the [schematic](FTDIandHM-10.png)
 	- Check the COM Port of the FTDI board connected to the PC on Device Manager
 	- If COM Port is not deducted, upgrade the drivers using following link
-	    If you are using FTDI Board, follow this [FTDI Driver Link](http://www.ftdichip.com/Drivers/D2XX.htm)
-	    If you are using CP2102 Board, follow this [CP2102 Driver Link](https://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
+	    
+If you are using FTDI Board, follow this [FTDI Driver Link](http://www.ftdichip.com/Drivers/D2XX.htm)
+If you are using CP2102 Board, follow this [CP2102 Driver Link](https://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
 
-SETTING UP MODULE TO UPGRADING MODE
+###Setting up the HM-10 module to Firmware upgrading mode
 
 Step 1: Launch the HMComAssistant form the downloaded folder on your PC
 Step 2: Select the COM Port on the HMComAssistant
@@ -126,7 +126,7 @@ Step 5: If HM-10 responds with OK then module connection is made correctly, if n
 Step 6: To pull the module to upgrading mode, Send AT+SBLUP commad.
 Step 7: If module responds with OK+SBLUP, then we are ready to upgrade the firmware.
 
-STEPS TO UPGRADE FIRMWARE
+###Steps to Upgrade Firmware
 
 Step 1: Launch the HMSoft.exe executable file on the downloaded folder
 Step 2: Select the firmware image from the downloaded folder [HMSoft.bin]
@@ -135,7 +135,6 @@ Step 4: Click on Load Image button to start burning the firmware to the HM-10 BL
 Step 5: Wait for the pop-up Download Completed Successfully
 
 ### Upgrade and Build Application Software:
---------------------------------
 
 #### Prerequisites
 Step 1 : Clone this repository into the build system.
@@ -159,7 +158,6 @@ Step 2 : Perform the following steps to build and load the the application on Li
 	
 
 #### Build & Install application software on Arduino Uno
--------------------------
 
 	-	Install the [HX711](library/HX711.zip) library in Adruino IDE
 	-	Open the application [source code](/hardware/bleHM10/bleHM10.ino) using Arduino IDE
