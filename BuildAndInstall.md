@@ -34,14 +34,15 @@ The following software and driver packages need to be installed in the build sys
 
 ##For Windows 7 
 	
-	- This option is available as part of advanced boot option which can be brought up during windows 7 boot time by 
-	pressing F8 key
+	- This option is available as part of advanced boot option which can be brought up during windows 7 boot time by pressing F8 key
 	
 ##For Windows 8/8.1/10
 
-	- Hold down the Windows key on your keyboard and press the letter C to open the Charm menu, then click the gear icon 		(Settings).
+	- Hold down the Windows key on your keyboard and press the letter C to open the Charm menu, then click the gear icon (Settings).
 	- Click More PC Settings -> Click General -> Under Advanced Startup, click Restart Now.
-NOTE: In Windows 8.1, the ‘Restart Now’ button has moved to ‘PC Setting -> Update & Recovery -> Recovery.’
+
+NOTE: In Windows 8.1, the ‘Restart Now’ button has moved to ‘PC Setting -> Update & Recovery -> Recovery.
+
 	- After restarting, click Troubleshoot -> Click Advanced Options -> Click Windows Startup Settings -> Click Restart
 	- After restarting your computer a second time, choose Disable driver signature enforcement from the list by typing the number 7 on your keyboard.Your computer will restart automatically.
 	
