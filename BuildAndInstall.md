@@ -46,7 +46,7 @@ NOTE: In Windows 8.1, the ‘Restart Now’ button has moved to ‘PC Setting ->
 	- After restarting, click Troubleshoot -> Click Advanced Options -> Click Windows Startup Settings -> Click Restart
 	- After restarting your computer a second time, choose Disable driver signature enforcement from the list by typing the number 7 on your keyboard.Your computer will restart automatically.
 	
-2. Disable Automatic Driver Installation on Windows OS. The automatic download and installation of device drivers can prevent proper installation of the LinkIt ONE USB COM port driver on Windows 7 machines. If you’ve already disabled the automatic installation of device drivers, you can skip this step, otherwise:
+2. Once you disable Automatic Driver Installation on Windows OS. The automatic download and installation of device drivers can prevent proper installation of the LinkIt ONE USB COM port driver on Windows 7 machines. If you’ve already disabled the automatic installation of device drivers, you can skip this step, otherwise:
 
 	- Open Control Panel and search for and open "Change Device Installation Settings" dialog box.
 	- In the dialog box, select "No, let me choose what to do" option, then click "Never install driver software from Windows Update" option. 
@@ -99,10 +99,40 @@ Once all the requisite softwares and drivers are installed , you can configure A
 
 Step 1: Update the Firmware for the HM-10 BLE Moulde by following link. Before performing the update, you also have connect the BLE module hardware to FTDI breakout board.   
 
-			https://suryaigor.wordpress.com/2016/02/05/upgrading-firmware-to-hm-10-cc2541-ble-4-0/
-	
-	
+#PREREQUISITES 
 
+	- Extract from [here](tools/BLE_HM10_FirmwareTool.rar)
+        	-- HMComAssistant.exe
+	   	-- HMSoft.exe
+	 	-- HMSoft.bin
+    	- HM-10 CC2541 BLE Module
+    	- FTDI USB to Serial Converter Module
+
+#Setting up the Connection with HM-10 Module and FTDI Chip
+
+	- Connect the HM-10 CC2541 BLE module to the FTDI Breakout Board as shown in the [schematic](FTDIandHM-10.png)
+	- Check the COM Port of the FTDI board connected to the PC on Device Manager
+	- If COM Port is not deducted, upgrade the drivers using following link
+	    If you are using FTDI Board, follow this [FTDI Driver Link](http://www.ftdichip.com/Drivers/D2XX.htm)
+	    If you are using CP2102 Board, follow this [CP2102 Driver Link](https://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
+
+SETTING UP MODULE TO UPGRADING MODE
+
+Step 1: Launch the HMComAssistant form the downloaded folder on your PC
+Step 2: Select the COM Port on the HMComAssistant
+Step 3: On HMComAssistant click Open Port
+Step 4: Enter AT command on the text box and Click SEND button
+Step 5: If HM-10 responds with OK then module connection is made correctly, if not check the connections made.
+Step 6: To pull the module to upgrading mode, Send AT+SBLUP commad.
+Step 7: If module responds with OK+SBLUP, then we are ready to upgrade the firmware.
+
+STEPS TO UPGRADE FIRMWARE
+
+Step 1: Launch the HMSoft.exe executable file on the downloaded folder
+Step 2: Select the firmware image from the downloaded folder [HMSoft.bin]
+Step 3: Enter the right COM Port number on COM Port
+Step 4: Click on Load Image button to start burning the firmware to the HM-10 BLE module
+Step 5: Wait for the pop-up Download Completed Successfully
 
 ### Upgrade and Build Application Software:
 --------------------------------
