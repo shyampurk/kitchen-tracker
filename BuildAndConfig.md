@@ -86,19 +86,21 @@ Step 1: Update the Firmware for the HM-10 BLE Moulde by following link
 
 			https://suryaigor.wordpress.com/2016/02/05/upgrading-firmware-to-hm-10-cc2541-ble-4-0/
 
-Step 2:	Make sure you have connected WiFi/Bluetooth Antenna to the Linkit One Board
 
 
 ### Upgrade and Build LINKIT ONE:
 --------------------------------
 
+#### Prerequisites
+Step 1 : Clone this repository 
+Step 2 : Make sure you have connected WiFi/Bluetooth Antenna to the Linkit One Board
+
+#### Build & Install application software on LinkIt ONE
 Step 1 - Update the Firmware for the Linkit One by following this official link
 
 	http://labs.mediatek.com/site/global/developer_tools/mediatek_linkit/get-started/windows_os_stream/update_firmware/index.gsp
 
-Step 2 : Make sure you have connected WiFi/Bluetooth Antenna to the Linkit One Board
-
-Step 3 : Perform the following steps to build and load the the application on LinkIt ONE 
+Step 2 : Perform the following steps to build and load the the application on LinkIt ONE 
 	-	Open the (git_repo)/linkitble/pubnub_linkit/pubnub_linkit.ino using Arduino IDE
 	-	Open the (git_repo)/linkitble/pubnub_linkit/settings.h
 	- 	Modify with your Pubnub KEYS, local WIFI Router SSID and PASSWORD
@@ -108,9 +110,7 @@ Step 3 : Perform the following steps to build and load the the application on Li
 	- 	Compile and Upload the code to the Arduino IDE by clicking the upload button.
 	
 
-
-
-### Upgrade and Build Arduino Uno 
+#### Build & Install application software on LinkIt ONE
 -------------------------
 
 	-	Follow the schematic and build the circuit with the LOAD CELL, Amplifier and Arduino UNO 
