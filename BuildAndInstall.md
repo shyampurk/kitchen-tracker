@@ -101,7 +101,7 @@ Step 2 : For performing the firmware update, the BLE module hardware has to be c
 	- If COM Port is not deducted, upgrade the drivers using following link [FTDI Driver Link](http://www.ftdichip.com/Drivers/D2XX.htm). 
 	    
 
-Step 3 : Coonect to HM-10 BLE module and set it up for firmware update as follows
+Step 3 : Connect to HM-10 BLE module and set it up for firmware update as follows
 
 		- Launch the HMComAssistant.exe form the downloaded folder on your PC
 		- Select the COM Port on the HMComAssistant
@@ -138,12 +138,14 @@ Step 2 : Perform the following steps to build and load the the application on Li
 	-	Open the application [source code](linkitble/pubnub_linkit/pubnub_linkit.ino) using Arduino IDE
 	-	Open the [config header file](linkitble/pubnub_linkit/settings.h) and update your pubnub keys (pubkey and subkey), local WIFI Router SSID, password and auth type (WIFI_AP , WIFI_PASSWORD , WIFI_AUTH).
 	-	Select Tools > Boards > Linkit One
-	-	Check for the debug port on the Control Panel's Device Manager > COM Ports > COMxx(DEBUG)
-	-	To Uplod the code, select the DEBUG COM Port at Tools > Port > (COMxx PORT)
+	-	Check for the debug port on the Windows Control Panel's Device Manager > COM Ports > COMxx(DEBUG)
+	-	To Upload the code, select the DEBUG COM Port at Tools > Port > (COMxx PORT)
 	- 	Compile the code under Arduino IDE and Upload to LinkIt ONE by clicking the upload button.
 	
 
 #### Build & Install application software on Arduino Uno
+
+Before installing the application software on Arduino UNO, calibration of the load cells must be performed to sense the weight accurately. Perform the [calibration steps](Calibrate.md) to calibrate the load cells and then proceed as below
 
 	-	Install the [HX711](library/HX711.zip) library in Adruino IDE
 	-	Open the application [source code](/hardware/bleHM10/bleHM10.ino) using Arduino IDE
