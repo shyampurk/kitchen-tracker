@@ -30,7 +30,21 @@ The following software and driver packages need to be installed in the build sys
 ##Installation of the Software/Drivers
 
 ### Prerequisites
-1. Before proceeding with the software installation, make sure to disable driver signing check on Windows 7 to allow third party drivers ( non Microsoft) to be installed. This option is available as part of advanced boot option which can be brought up during windows 7 boot time by pressing F8 key ( Shift Key for Windows 8)
+1. Before proceeding with the software installation, make sure to disable driver signing check on Windows 7 to allow third party drivers ( non Microsoft) to be installed. 
+
+##For Windows 7 
+	
+	- This option is available as part of advanced boot option which can be brought up during windows 7 boot time by 
+	pressing F8 key
+	
+##For Windows 8/8.1/10
+
+	- Hold down the Windows key on your keyboard and press the letter C to open the Charm menu, then click the gear icon 		(Settings).
+	- Click More PC Settings -> Click General -> Under Advanced Startup, click Restart Now.
+NOTE: In Windows 8.1, the ‘Restart Now’ button has moved to ‘PC Setting -> Update & Recovery -> Recovery.’
+	- After restarting, click Troubleshoot -> Click Advanced Options -> Click Windows Startup Settings -> Click Restart
+	- After restarting your computer a second time, choose Disable driver signature enforcement from the list by typing the number 7 on your keyboard.Your computer will restart automatically.
+	
 2. Disable Automatic Driver Installation on Windows OS. The automatic download and installation of device drivers can prevent proper installation of the LinkIt ONE USB COM port driver on Windows 7 machines. If you’ve already disabled the automatic installation of device drivers, you can skip this step, otherwise:
 
 	- Open Control Panel and search for and open "Change Device Installation Settings" dialog box.
