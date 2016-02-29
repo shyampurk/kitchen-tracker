@@ -1,6 +1,5 @@
-***************************
+
 #KITCHEN INVENTORY TRACKER 
-***************************
 
 ##Steps for building the project hardware 
 ---------------------------
