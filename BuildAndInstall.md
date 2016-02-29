@@ -63,12 +63,12 @@ Installing the Arduino IDE SDK
 
 	- 	Download the Arduino IDE 1.6.6 [Recommeded for LINKIT]
 		
-The Arduino IDE provides your coding environment and is used for monitoring the development board. Currently, the LinkIt ONE SDK is compatible with Arduino IDE version 1.6.6. Download Arduino IDE from this [LINK](https://www.arduino.cc/en/Main/OldSoftwareReleases#previous)
+The Arduino IDE provides your coding environment and is used for monitoring the development board. Currently, the LinkIt ONE SDK is compatible with Arduino IDE version 1.6.6. Download Arduino IDE from this [Link](https://www.arduino.cc/en/Main/OldSoftwareReleases#previous)
 
 
 Step 2: Download the USB COM port driver for the LinkIt ONE Development Board
 
-	- 	A USB COM port driver is required for the LinkIt ONE SDK installation, get it [here](download.labs.mediatek.com/mediatek_linkit_windows-com-port-driver.zip)
+USB COM port driver is required for the LinkIt ONE SDK installation, can be downloaded from this [Link](download.labs.mediatek.com/mediatek_linkit_windows-com-port-driver.zip)
 
 		1.	Extract the content of the USB COM port driver zip file you downloaded.
 		2.	Run the installer InstallMTKUSBCOMPortDriver.exe and follow the instructions.
@@ -98,8 +98,8 @@ Step 1: Update the Firmware for the HM-10 BLE Moulde by following link. Before p
 
 	- Extract from [here](tools/BLE_HM10_FirmwareTool.rar)
         	-- HMComAssistant.exe
-	   	-- HMSoft.exe
-	 	-- HMSoft.bin
+	   		-- HMSoft.exe
+	 		-- HMSoft.bin
 
 ###Setting up the Connection with HM-10 Module and FTDI Chip
 
