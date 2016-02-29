@@ -7,6 +7,7 @@
 
 ##Hardware Requirements:
 -----------------------
+The list of hardware components if this project is as follows
 
 	-	Arduino UNO
 	-	Load Cells
@@ -14,7 +15,29 @@
 	-	HM - 10 BLE Module
 	-	Mediatek Linkit One HDK
 
-Installation of the Softwares and Drivers Required
+Refer to the [schematic diagram](Schematic.png) for teh hardware setup
+
+##Software Requirements :
+The following software and driver packages need to be installed in the build system. 
+
+	- 	OS : Windows 7/8 or OSX. ( The steps provided below are for Windows 7. Linkit ONE officially supports Windows & MAC Operating Systems only)
+	- 	Arduino IDE
+	- 	USB COM Port Driver
+	- 	USB to Serial Driver  
+
+##Installation of the Software/Drivers
+
+### Prerequisites
+1. Before proceeding with the software installation, make sure to disable driver signing check on Windows 7 to allow third party drivers ( non Microsoft) to be installed. This option is available as part of advanced boot option which can be brought up during windows 7 boot time by pressing F8 key ( Shift Key for Windows 8)
+2. Disable Automatic Driver Installation on Windows OS. The automatic download and installation of device drivers can prevent proper installation of the LinkIt ONE USB COM port driver on Windows 7 machines. If you’ve already disabled the automatic installation of device drivers, you can skip this step, otherwise:
+
+	- Open Control Panel and search for and open Change device installation settings.
+	- In Device Installation Settings select "No, let me choose what to do" option, then click "Never install driver software from Windows Update". 
+	- Also make sure to uncheck "Automatically get the device application and information provided by your device manufacturer".
+	- Click "Save Changes" and exit the control panel.
+	 
+
+###Install Arduino IDE	
 ----------------------------------------------------
 Step 1: Setting up the Arduino IDE to Program the Arduino UNO and Linkit One
 
