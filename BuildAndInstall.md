@@ -143,6 +143,7 @@ Step 1 - Update the Firmware for the Linkit One by following this official link
 	http://labs.mediatek.com/site/global/developer_tools/mediatek_linkit/get-started/windows_os_stream/update_firmware/index.gsp
 
 Step 2 : Perform the following steps to build and load the the application on LinkIt ONE 
+
 	-	Open the application [source code](linkitble/pubnub_linkit/pubnub_linkit.ino) using Arduino IDE
 	-	Open the [config header file](linkitble/pubnub_linkit/settings.h) and update your pubnub keys (pubkey and subkey), local WIFI Router SSID, password and auth type (WIFI_AP , WIFI_PASSWORD , WIFI_AUTH).
 	-	Select Tools > Boards > Linkit One
