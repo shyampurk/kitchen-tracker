@@ -182,17 +182,20 @@ var app = {
     				graph() - consumption /refill data shown in graph 
 ****************************************************************************************************/
     graph1Show: function(){
-        app.publish({"requester":"APP","requestType":2,"containerID":"001","timeSpan":7});
-        $('#button1').click(function(e) {
-            app.graph('#graph1',"canvas1",consumption_1,refill_1)
-        });
+        
+            app.publish({"requester":"APP","requestType":2,"containerID":"001","timeSpan":7});
+            $('#button1').click(function(e) {
+                app.graph('#graph1',"canvas1",consumption_1,refill_1)
+            });
+            
     },
     graph2Show: function(){
-        app.publish({"requester":"APP","requestType":2,"containerID":"002","timeSpan":7});
-        $('#button2').click(function(e) {
-            app.graph('#graph2',"canvas2",consumption_2,refill_2)
-        });
         
+            app.publish({"requester":"APP","requestType":2,"containerID":"002","timeSpan":7});
+            $('#button2').click(function(e) {
+                app.graph('#graph2',"canvas2",consumption_2,refill_2)
+            });
+            
     },
     graph: function(p_graphID,p_canvas,p_consumption,p_refill){
         var lineChartData;
@@ -208,6 +211,7 @@ var app = {
                         fillColor: "rgba(220,220,220,0)",
                         strokeColor: "rgba(220,180,0,1)",
                         pointColor: "rgba(220,180,0,1)",
+                        label:'consumption',
                         data: p_consumption,
                         
                     },
@@ -215,6 +219,7 @@ var app = {
                         fillColor: "rgba(220,220,220,0)",
                         strokeColor: "rgb(0, 0, 255)",
                         pointColor: "rgb(0, 0, 255)",
+                        label:'refill',
                         data: p_refill,
                     }]
                 };
@@ -227,6 +232,7 @@ var app = {
                 Chart.defaults.global.responsive = true;
                 Chart.defaults.global.scaleLineColor = "black";
                 Chart.defaults.global.scaleFontSize = 8;
+                
                 var ctx = document.getElementById(p_canvas).getContext("2d");
                 var LineChartDemo = new Chart(ctx).Line(lineChartData, {
                     pointDotRadius: 5,
@@ -234,7 +240,6 @@ var app = {
                     scaleShowVerticalLines: true,
                     scaleGridLineColor: "white"
                 });
-
             });
         });
     },
@@ -341,14 +346,14 @@ var app = {
             	var sortMessage = Object.keys(message).sort();
                 if(message[Object.keys(message)[0]][0] == "001"){
                 	container_history_1.push(message);
-                	for(var i = Object.keys(message).length - 1,j=0; i > 0,j< Object.keys(message).length; j++,i--){
-                    	refill_1[j] = (message[sortMessage[i]][2]);
+                	for(var j=0; j< Object.keys(message).length; j++){
+                    	refill_1[j] = (message[sortMessage[j]][2]);
                 	}
                 }
                 else{
                 	container_history_2.push(message);
-                	for(var i = Object.keys(message).length - 1,j=0; i > 0,j< Object.keys(message).length; j++,i--){
-                    	refill_2[j] = (message[sortMessage[i]][2]);
+                	for(var j=0; j< Object.keys(message).length; j++){
+                    	refill_2[j] = (message[sortMessage[j]][2]);
                 	}	
                 }
             }
@@ -359,14 +364,14 @@ var app = {
             	var sortMessage = Object.keys(message).sort();
                 if(message[Object.keys(message)[0]][0] == "001"){
                 	container_history_1.push(message);
-                	for(var i = Object.keys(message).length - 1,j=0; i > 0,j< Object.keys(message).length; j++,i--){
-                    	consumption_1[j] = (message[sortMessage[i]][2]);
+                	for(var j=0; j< Object.keys(message).length; j++){
+                    	consumption_1[j] = (message[sortMessage[j]][2]);
                 	}
                 }
                 else{
                 	container_history_2.push(message);
-                	for(var i = Object.keys(message).length - 1,j=0; i > 0,j< Object.keys(message).length; j++,i--){
-                    	consumption_2[j] = (message[sortMessage[i]][2]);
+                	for(var j=0;j< Object.keys(message).length; j++){
+                    	consumption_2[j] = (message[sortMessage[j]][2]);
                 	}	
                 }
             }

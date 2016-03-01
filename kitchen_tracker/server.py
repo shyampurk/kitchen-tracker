@@ -157,13 +157,13 @@ Description		:	Initialize the container Status, loads the container and updates
 Parameters 		:	None
 
 ****************************************************************************************'''
-def defaultLoader(p_containerid):
+def defaultLoader(p_containerid,p_expiryInMonths):
 	#KEY = ContainerID VALE =  Present Weight, Previous Weight, Total Refill, Total Consumed, Start Date, Expiry Estimate, Start Time
 	g_containerStatus.setdefault(p_containerid, [0.00,0.00,0.00,0.00,0,0,0,0])
 	
 	#Inital Update for the APP for the Empty Container and Setting UP 
-	pubnub.publish(channel="kitchenApp-resp", message={g_containerSettings[p_containerid][SETTINGS_LABEL]:[p_containerid,0.00,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],2,0],"warning":"!!Registration Success!!"})
-	g_containerMessage.setdefault(g_containerSettings[p_containerid][SETTINGS_LABEL],[p_containerid,0.00,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],2,0])
+	pubnub.publish(channel="kitchenApp-resp", message={g_containerSettings[p_containerid][SETTINGS_LABEL]:[p_containerid,0.00,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],p_expiryInMonths,0],"warning":"!!Registration Success!!"})
+	g_containerMessage.setdefault(g_containerSettings[p_containerid][SETTINGS_LABEL],[p_containerid,0.00,g_containerSettings[p_containerid][SETTINGS_CRITICAL_LEVEL],p_expiryInMonths,0])
 	
 	#Initial Query for the History and Graph
 	appHistoricalGraph(p_containerid,TIMESPAN_FOR_HISTORY)
@@ -187,8 +187,11 @@ def appSetting(p_requester,p_containerid,p_containerlabel,p_expiryInMonths,p_cri
 	if(p_requester == "APP"):
 		# Container Label, Expiry in Months, Critical Level, End Date
 		if(not g_containerSettings.has_key(p_containerid) and not g_containerMessage.has_key(p_containerlabel)):
-			g_containerSettings[p_containerid] = [p_containerlabel,p_expiryInMonths,p_criticallevel,(datetime.datetime.today() + relativedelta(months=1))]
-			defaultLoader(p_containerid)
+			if EXPIRY_SELECT == 0:
+				g_containerSettings[p_containerid] = [p_containerlabel,p_expiryInMonths,p_criticallevel,(datetime.datetime.today() + relativedelta(months=p_expiryInMonths))]
+			else:
+				g_containerSettings[p_containerid] = [p_containerlabel,p_expiryInMonths,p_criticallevel,(datetime.datetime.now() + relativedelta(hours=p_expiryInMonths))]
+			defaultLoader(p_containerid,p_expiryInMonths)
 		else:
 			pubnub.publish(channel="kitchenApp-resp", message={"warning":"ID/Name is already registered"})
 
@@ -204,6 +207,7 @@ def appReset(p_requester,p_containerid):
 	if(p_requester == "APP"):
 		if(g_containerSettings.has_key(p_containerid)):
 			del g_containerMessage[g_containerSettings[p_containerid][SETTINGS_LABEL]],g_containerSettings[p_containerid]
+			g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] = 0
 		else:
 			logging.warning("Container ID has not been registered")
 
@@ -281,7 +285,7 @@ def containerWeight(p_containerid,p_weight):
 		if(g_perdayRefill[p_containerid][REFILL_DATE] != l_todayDate):
 			del g_perdayRefill[p_containerid]
 			g_perdayRefill.setdefault(p_containerid, [l_todayDate,0.00])
-
+		logging.info("Item Refill")
 		# Calculate and Update the Per day Refill Value = Per Day Total Refill + current refill
 		g_perdayRefill[p_containerid][REFILL_QTY] = g_perdayRefill[p_containerid][REFILL_QTY] + (g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT])
 
@@ -297,13 +301,14 @@ def containerWeight(p_containerid,p_weight):
 		if(g_perdayConsumption[p_containerid][CONSUM_DATE] != l_todayDate):
 			del g_perdayConsumption[p_containerid]
 			g_perdayConsumption.setdefault(p_containerid, [l_todayDate,0])
-		
+		logging.info("Item Consumed")
 		# Calculate and Update the Per day Consumption Value = Consumption + current Consumption
 		g_perdayConsumption[p_containerid][CONSUM_QTY] = g_perdayConsumption[p_containerid][CONSUM_QTY] + (g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT])
 		
 		# Calculate and Update the Total Consumption Value = Consumption + current Consumption
 		g_containerStatus[p_containerid][STATUS_TOTAL_CONSUMED] = g_containerStatus[p_containerid][STATUS_TOTAL_CONSUMED] + (g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT])
 		g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] = g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT]
+		
 		if(g_containerSettings.has_key(p_containerid)):
 			updateExpiry(p_containerid,CONSUMPTION_STATUS)
 			updateCurrentStatus(l_todayDate,p_containerid,CONSUMPTION_STATUS,p_weight,g_perdayConsumption[p_containerid][CONSUM_QTY])
@@ -454,7 +459,7 @@ Parameters 		:	message - Sensor Status sent from the hardware
 	
 ****************************************************************************************'''
 def callback(message, channel):
-	if(message.has_key("containerID") and message.has_key("weight")):
+	if(message.has_key("containerID") and message.has_key("weight") and g_containerSettings.has_key(message["containerID"])):
 		containerWeight(message["containerID"],message["weight"])
 	else:
 		logging.warning("Invalid details received on Hardware response")

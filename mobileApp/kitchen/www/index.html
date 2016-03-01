@@ -10,7 +10,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
     <script src="js/index.js"></script>
 </head>
-
+<style type="text/css">
+    .chart-legend li span{
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 5px;
+    }
+    .chart-legend .consumption{ background-color:#DCB400  }
+    .chart-legend .refill{ background-color:#0000FF  }
+    ul{
+        list-style-type: none;
+    }
+</style>
 <body>
 
 
@@ -82,14 +94,23 @@
                 <a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext"></a>
                 <h2>Graph</h2>
             </div>
-            <canvas  id="canvas1"></canvas>       
+            <canvas  id="canvas1"></canvas>
+            <ul class="chart-legend">
+                <li><span class="consumption"></span> Consumption Graph</li>
+                <li><span class="refill"></span> Refill Graph</li>
+            </ul>
+
         </div>
         <div data-role="popup" id="graph2" data-overlay-theme="b" data-theme="a" data-dismissible="false"  data-history="false">
             <div data-role="header" data-theme="b">
                 <a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext"></a>
                 <h2>Graph</h2>
             </div>
-            <canvas  id="canvas2"></canvas>       
+            <canvas  id="canvas2"></canvas> 
+            <ul class="chart-legend">
+                <li><span class="consumption"></span> Consumption Graph</li>
+                <li><span class="refill"></span> Refill Graph</li>
+            </ul>    
         </div>
     </div>
     
@@ -138,7 +159,7 @@
         </div>
 
         <div data-role="main" class="ui-content">
-            <p>Kitchen Tracker solves the most common people's frustrations by providing a powerful mobile solution for tracking your kitchen items automatically, just a finger tap away.</p>
+            <p>Application for kitchen inventory tracking </p>
             <style type="text/css">
                 /* basic positioning */
                 .legend { list-style: none; }
