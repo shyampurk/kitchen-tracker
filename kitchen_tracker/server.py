@@ -208,6 +208,7 @@ def appReset(p_requester,p_containerid):
 		if(g_containerSettings.has_key(p_containerid)):
 			del g_containerMessage[g_containerSettings[p_containerid][SETTINGS_LABEL]],g_containerSettings[p_containerid]
 			g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] = 0
+			g_containerStatus[p_containerid][EXPIRY_ESTIMATE] = 0
 		else:
 			logging.warning("Container ID has not been registered")
 
@@ -285,7 +286,7 @@ def containerWeight(p_containerid,p_weight):
 		if(g_perdayRefill[p_containerid][REFILL_DATE] != l_todayDate):
 			del g_perdayRefill[p_containerid]
 			g_perdayRefill.setdefault(p_containerid, [l_todayDate,0.00])
-		logging.info("Item Refill")
+		logging.info(p_containerid + " Item Refill")
 		# Calculate and Update the Per day Refill Value = Per Day Total Refill + current refill
 		g_perdayRefill[p_containerid][REFILL_QTY] = g_perdayRefill[p_containerid][REFILL_QTY] + (g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT])
 
@@ -301,7 +302,7 @@ def containerWeight(p_containerid,p_weight):
 		if(g_perdayConsumption[p_containerid][CONSUM_DATE] != l_todayDate):
 			del g_perdayConsumption[p_containerid]
 			g_perdayConsumption.setdefault(p_containerid, [l_todayDate,0])
-		logging.info("Item Consumed")
+		logging.info(p_containerid + " Item Consumed")
 		# Calculate and Update the Per day Consumption Value = Consumption + current Consumption
 		g_perdayConsumption[p_containerid][CONSUM_QTY] = g_perdayConsumption[p_containerid][CONSUM_QTY] + (g_containerStatus[p_containerid][STATUS_PREVIOUS_WEIGHT] -  g_containerStatus[p_containerid][STATUS_PRESENT_WEIGHT])
 		
