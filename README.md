@@ -18,7 +18,9 @@ This application relies on PubNub data stream network for the underlying messagi
 
 ## Usage
 
-Once the hardware and server is configured and deployed, the app can be launched to start tracking the inventory. Perform the following steps to use the app.
+Once the hardware and server is configured and deployed, the app can be launched to start tracking the inventory. But before launching the app, keep two containers on the load cells and fill them up to a certain level with any commonly used kitchen consumable item, such as cereals (rice, wheat, etc.) or staples. 
+
+Perform the following steps to use the app.
 
 Step 1 - Once launched, the app screen will initially look like this.   
 <img src="/imgs/Screenshot-0.jpg" align="center" width="250" >
@@ -33,8 +35,10 @@ Step 4 - Perform the above steps for the second container. You will get a messag
 
 <img src="/imgs/Screenshot-2.jpg" align="center" width="250" >
 
-Step 5 - Return back to the main screen and now you can see the container levels based on the weights.
+Step 5 - Return back to the main screen and now you can see the container levels based on the current weight of the containers.
+
 <img src="/imgs/Screenshot-3.jpg" align="center" width="250" >
 
+Step 6 - In order to simulate the consumption of inventory, you can choose to take out some portions of the stored consumable from the container. Alternatively, you can also choose to refill the container. Either ways, you will notice that the app screen is updated with the new container weigh figures and visual level indicator.
 
 
