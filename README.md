@@ -31,7 +31,7 @@ Step 1 - Once launched, the app screen will initially look like this.
 Step 2 - Click on the settings icon on the top to bring up the settings page.     
 <img src="/imgs/Screenshot-1.jpg" align="center" width="250" >
 
-Step 3 - Enter a label text to identify the container, and choose a value for the threshold and expiry date and then press submit. The threshold value is used to decide the minimum weight of the container. If the container weight is below this threshold, a visual indication is provided to the user to inform him about the depleting inventory. Expiry date is in months. This is used to track the expiry of inventory item kept in this container.  
+Step 3 - Enter a label text to identify the container, and choose a value for the 'Threshold' and 'Expiry in months' parameter from the slider, and then press submit. The threshold value is used to decide the minimum weight of the container. If the container weight is below this threshold, a visual indication is provided to the user to inform him about the critical level of inventory. Expiry is used to track the expiry of inventory item kept in this container.  
 
 Step 4 - Perform the above steps for the second container by selecting container ID 002 at the top of settings screen.Once submitted,  you will get a message indicating that the container settings have been registered. 
 
@@ -57,8 +57,39 @@ Step 1 - Click on History button below either of the container icon on the  main
 <img src="/imgs/Screenshot-4.jpg" align="center" width="250" >
 
 
-Step 2 - Click on Graph button below either of the container icon on the  main screen. This will bring up a chart which depicts the line graph of the consumption of replenishment pattern of the container for the last seven days.
+Step 2 - Click on Graph button below either of the container icon on the  main screen. This will bring up a chart which depicts the line graph of the consumption of replenishment pattern of the container for the last seven days. The blue line indicates replenishment and orange line indicates consumption.
 
 <img src="/imgs/Screenshot-5.jpg" align="center" width="250" >
+
+
+## Tracking Expiry
+
+Since most of the kitchen consumables have an expiry date, this application can help track that and notify the user if the inventory has expired. 
+
+Every time the containers are refilled, the expiry date is recalculated to be set on a future date, based on the container settings. The expiry value configured in the settings screen is for months.  So if the expiry value is set to 5, this means that the consumable stored in the container will expire 5 months from the the date when the setting is registered. If during this period the container is refilled again, the expiry is again recalculated from the date of refill and shifted in the future. 
+
+In order to test the app for expiry notification, we can redeploy the server application by making a small config change which will treat the expiry value to be in minutes ( instead of months). This way we can set the inventory to expire within a few minutes and quickly verify the functionality of the app.
+
+Perform the following steps to check for expiry.
+
+Step 1 - Refer to the [deployment steps](Deploy.md). To set the expiry to be triggered in minutes, we have to redeploy the server application on Bluemix after changing the following configuration.
+
+        - Under "Deploying the Application Server" section, refer to step 2
+        - Modify the value of expiry to 1 in config.ini file
+          - expiry = 1
+        - Save the file and redeploy the application on Bluemix 
+        
+Step 2 - Once the server application starts running, perform the steps under "General Usage" section above to register the containers and their settings. Choose a value of 5 for the 'Expiry in months' parameter. Since we have now reconfigured the server to treat expiry in minutes, this will translate to an expiry of 5 minutes instead of 5 months.
+
+Step 3 - Refill the containers with some content and wait for 5 minutes
+
+Step 4 - After 5 minutes, the app screen will display a expiry indication like this.
+
+<img src="/imgs/Screenshot-6.jpg" align="center" width="250" >
+
+Step 5 - In order to restore the app, Reset the containers and update the settings as per step 7 under "General Usage" section.
+
+
+
 
 
