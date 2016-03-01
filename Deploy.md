@@ -67,6 +67,7 @@ Step 2 - Update the parameters in the [config.ini](kitchen_tracker/config.ini)
 	username = User ID of the DashDB instance
 	pwd = Password of dashDB instance
 	port = Port Number
+	expiry = 0 ( Leave it to default value of zero)
 	
 
 Step 3 - Open the manifest file and update the follwing entries
