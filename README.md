@@ -29,7 +29,9 @@ Step 2 - Click on the settings icon on the top to bring up the settings page.
 
 Step 3 - Enter a label text to identify the container, and choose a value for the threshold and expiry date and then press submit. The threshold value is used to decide the minimum weight of the container. If the container weight is below this threshold, a visual indication is provided to the user to inform him about the depleting inventory. Expiry date is in months. This is used to track the expiry of inventory item kept in this container.  
 
-Step 4 - Perform the above steps for the second container. You will get a message indicating that the container settings have been registered. <img src="/imgs/Screenshot-2.jpg" align="center" width="250" >
+Step 4 - Perform the above steps for the second container. You will get a message indicating that the container settings have been registered. 
+
+<img src="/imgs/Screenshot-2.jpg" align="center" width="250" >
 
 Step 5 - Return back to the main screen and now you can see the container levels based on the weights.
 <img src="/imgs/Screenshot-3.jpg" align="center" width="250" >
