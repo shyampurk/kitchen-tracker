@@ -83,12 +83,16 @@ Step 2 - Once the server application starts running, perform the steps under "Ge
 
 Step 3 - Refill the containers with some content and wait for 5 minutes
 
-Step 4 - After 5 minutes, the app screen will display a expiry indication like this.
+Step 4 - After 5 minutes, take out some portion of the consumable from the container. The app screen will now display a expiry indication like this.
 
 <img src="/imgs/Screenshot-6.jpg" align="center" width="250" >
 
 Step 5 - In order to restore the app, Reset the containers and update the settings as per step 7 under "General Usage" section.
 
+## Limitations
+1. The expiry indication is displayed on the app only when the user consumes the inventory after to the  expiry period is crossed.
+2. The app does not retain the container settings for both containers during subsequent settings display. 
+3. After every consumption or refill, the hardware takes atleast 20 to 30 seconds to stabilize the weight and send the new weight value to server.
 
 
 
