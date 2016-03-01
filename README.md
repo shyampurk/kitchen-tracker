@@ -24,7 +24,7 @@ Step 1 - Once launched, the app screen will initially look like this.
 <img src="/imgs/Screenshot-0.jpg" align="center" width="250" >
 
 
-Step 2 - Click on the settings icon on the top to bring up the settings page.
+Step 2 - Click on the settings icon on the top to bring up the settings page.     
 <img src="/imgs/Screenshot-1.jpg" align="center" width="250" >
 
 Step 3 - Enter a label text to identify the container. Choose a value for the threshold and expiry date. 
