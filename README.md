@@ -20,5 +20,14 @@ This application relies on PubNub data stream network for the underlying messagi
 
 Once the hardware and server is configured and deployed, the app can be launched to start tracking the inventory. Perform the following steps to use the app.
 
-Step 1 - Once launched, the app screen will initially look like this.
-![Initial Screen](/imgs/Screenshot-0.jpg)
+Step 1 - Once launched, the app screen will initially look like this.   
+<img src="/imgs/Screenshot-0.jpg" align="center" width="250" >
+
+
+Step 2 - Click on the settings icon on the top to bring up the settings page.
+<img src="/imgs/Screenshot-1.jpg" align="center" width="250" >
+
+Step 3 - Enter a label text to identify the container. Choose a value for the threshold and expiry date. 
+
+Step 4 - Perform the above steps for the second container
+
