@@ -8,7 +8,7 @@ This is a model application to demonstrate how you can keep a track of your kitc
 
 This application comprises of a hardware setup, a cloud hosted server application and a mobile app. 
 
-The hardware is based on Linkit ONE , Arduino UNO and HM-10 BLE module. Two load cells are used to sense the weight of the containers. Refer this [link](HwBuildAndInstall.md) for setting up and programming the hardware.
+The hardware is based on Linkit ONE , Arduino UNO and HM-10 BLE module. Two load cells are used to sense the weight of the containers. Refer [hardware build and install steps](HwBuildAndInstall.md) for setting up and programming the hardware.
 
 The server application is hosted on [IBM Bluemix](http://www.ibm.com/cloud-computing/bluemix/). Refer this [link](Deploy.md) for instructions on how to deploy the server application on Bluemix.
 
@@ -18,7 +18,7 @@ This application relies on [PubNub](www.pubnub.com) data stream network for the 
 
 ## Usage
 
-Once the hardware and server is configured and deployed, the app can be launched to start tracking the inventory. But before launching the app, keep two containers on the load cell assembly and fill them up to a certain level with any commonly used kitchen consumable item, such as cereals (rice, wheat, etc.) or staples. 
+Once the hardware and server is configured and deployed, the app can be launched to start tracking the inventory. But before launching the app, keep two containers on the load cell assembly and fill them up to a certain level with any commonly used kitchen consumable item, such as cereals or some form of staple food. 
 
 ### General Usage
 
