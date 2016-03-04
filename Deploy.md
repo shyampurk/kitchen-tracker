@@ -70,7 +70,7 @@ Step 2 - Update the parameters in the [config.ini](kitchen_tracker/config.ini)
 	expiry = 0 ( Leave it to default value of zero)
 	
 
-Step 3 - Open the manifest file and update the follwing entries
+Step 3 - Open the [manifest file](https://github.com/shyampurk/kitchen-tracker/blob/master/kitchen_tracker/manifest.yml) and update the follwing entries
 
 		applicationa:
 			- name : <name of the application on server>
@@ -91,4 +91,4 @@ Step 6 - Run the following command to push the application code to bluemix
 
 		'cf push' 
 
-Once successfully pushed, the aerver application will be automatically started. You can check its state in your bluemix dashboard and see that its state is set to 'Running'
+Once successfully pushed, the server application will be automatically started. You can check its state in your bluemix dashboard and see that its state is set to 'Running'
