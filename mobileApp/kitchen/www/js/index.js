@@ -52,8 +52,8 @@ var app = {
 ****************************************************************************************************/ 
     pubnubInit: function() {
         pubnub = PUBNUB({                          
-            publish_key   : 'pub-c-913ab39c-d613-44b3-8622-2e56b8f5ea6d',
-            subscribe_key : 'sub-c-8ad89b4e-a95e-11e5-a65d-02ee2ddab7fe'})
+            publish_key   : 'demo',
+            subscribe_key : 'demo'})
         app.default()
     },
 /**************************************************************************************************
