@@ -1,6 +1,6 @@
 # Building the Mobile App
 
-## Setting up Build Environment for Android & Cordova
+## Setting up Build Environment for Android & Cordova (Ubuntu OS)
 
 Step 1: Install GIT using the following command using your terminal,
 
@@ -85,9 +85,9 @@ Check the name of the JDK install directory with:
 
         ls
 
-The path to the JDK becomes "~/java/jdk1.8.0_11" where "jdk1.8.0_11" is the name displayed by the ls command.
+The path to the JDK becomes "~/java/jdk1.8.0_11" where "jdk1.8.0_11" is the name displayed by the 'ls' command.
 
-Add the path to the JDK by editing .bashrc in your home directory. You can use for example nano or gedit for this:
+Add the path to the JDK by editing .bashrc in your home directory. You can use one of the common editors, for example nano or gedit for this:
 
         nano ~/.bashrc
 
@@ -212,13 +212,13 @@ Step 1 : Change the directory to  mobileApp/kitchen/
 
             cd kitchen-tracker/mobileApp/kitchen/
 
-Step 2 : Modify the pubnub publish and subscribe keys at www/js/index.js
+Step 2 : Modify the pubnub publish and subscribe keys in [index.js](https://github.com/shyampurk/kitchen-tracker/blob/master/mobileApp/kitchen/www/js/index.js), at line 55,56 .
 
-Step 3 : Build the .apk file using,
+Step 3 : Build the .apk file using the command,
 
             cordova build android
 
-Step 4 : Once the .apk file is build successfully, you will find the app at this path
+Step 4 : Once the .apk file is built successfully, you will find the app at this path
 
             .platforms/android/build/outputs/android-debug.apk
 
