@@ -8,13 +8,13 @@ This is a model application to demonstrate how you can keep a track of your kitc
 
 This application comprises of a hardware setup, a cloud hosted server application and a mobile app. 
 
-The hardware is based on Linkit ONE and HM-10 BLE module. two load cells are used to sense the weight of the containers. Refer this [link](HwBuildAndInstall.md) for setting up and programming the hardware.
+The hardware is based on Linkit ONE , Arduino UNO and HM-10 BLE module. Two load cells are used to sense the weight of the containers. Refer this [link](HwBuildAndInstall.md) for setting up and programming the hardware.
 
-The server application is hosted on IBM Bluemix. Refer this [link](Deploy.md) for instructions on how to deploy the server application on Bluemix.
+The server application is hosted on [IBM Bluemix](http://www.ibm.com/cloud-computing/bluemix/). Refer this [link](Deploy.md) for instructions on how to deploy the server application on Bluemix.
 
-The Mobile app is a cordova based android app used to track the inventory and provide some basic analytics. Refer this [link](AppBuild.md) for instructions on how to build th app.
+The Mobile app is a cordova based android app used to track the inventory and provide some basic analytics. Refer this [link](AppBuild.md) for instructions on how to build the app.
 
-This application relies on PubNub data stream network for the underlying messaging between the hardware, the server and app. Ensure that the same set of PubNub keys are used across all the components while configuring and building the application software.  
+This application relies on [PubNub](www.pubnub.com) data stream network for the underlying messaging between the hardware, the server and mobile app. Ensure that the same set of PubNub keys are used across all the components while configuring and building the application software.  
 
 ## Usage
 
@@ -33,11 +33,11 @@ Step 2 - Click on the settings icon on the top to bring up the settings page.
 
 Step 3 - Enter a label text to identify the container, and choose a value for the 'Threshold' and 'Expiry in months' parameter from the slider, and then press submit. The threshold value is used to decide the minimum weight of the container. If the container weight is below this threshold, a visual indication is provided to the user to inform him about the critical level of inventory. Expiry is used to track the expiry of inventory item kept in this container.  
 
-Step 4 - Perform the above steps for the second container by selecting container ID 002 at the top of settings screen.Once submitted,  you will get a message indicating that the container settings have been registered. 
+Step 4 - Perform the above steps for the second container by selecting container ID 002 at the top of settings screen.Once submitted,  you will get a message indicating that the container settings have been registered. Both containers have to be registered separately.
 
 <img src="/imgs/Screenshot-2.jpg" align="center" width="250" >
 
-Step 5 - Return back to the main screen and now you can see the container levels based on the current weight of the containers.
+Step 5 - Return back to the main screen and now you can see the container levels based on the current weight of the containers. Maximum weight supported by this application is 5 Kgs.
 
 <img src="/imgs/Screenshot-3.jpg" align="center" width="250" >
 
@@ -92,7 +92,7 @@ Step 5 - In order to restore the app, Reset the containers and update the settin
 ## Limitations
 1. The expiry indication is displayed on the app only when the user consumes the inventory after to the  expiry period is crossed.
 2. The app does not retain the container settings for both containers during subsequent settings display. 
-3. After every consumption or refill, the hardware takes atleast 20 to 30 seconds to stabilize the weight and send the new weight value to server.
+3. After every consumption or refill, the hardware may take atleast 20 to 30 seconds to stabilize the weight and send the new weight value to server.
 
 
 
