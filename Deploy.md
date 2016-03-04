@@ -14,15 +14,15 @@ Step 1: Login to Bluemix with your credentials.
 
 Step 2: In your dashboard, goto Catalog and select the Data and Analytics Section
 			
-			You can see that thedashDB service will be listed under this section or you can search for dashDB 
+			You can see that the dashDB service will be listed under this section or you can search for dashDB 
 
-Step 3: Create a service for your space by filling following details,
+Step 3: Click on dashDB service icon and create a dashDB service instance for your space by filling following details,
 		
 			1) Space - Your space name where you want to add this service ( This might have been preselected if you have an existing space)
     		2) App   - You can select "leave unbound"
 			3) Service name - Enter a name for the service of your choice
 			4) Credential name - Enter a name for the Credential of your choice
-			5) Selected Plan - Depends on the data you can select your plan but for up to 1 GB No charge.
+			5) Selected Plan - Choose 'Entry'.
 			6) Click CREATE to create the dashdb service instance.
 
 Step 4: After creation of the service, go back to dashboard 
