@@ -124,7 +124,7 @@ Step 4 : Update firmware as follows
 
 Step 1 : Clone this repository into the build system.
 
-Step 2 : Sign up for [PubNub](www.pubnub.com) subscription and get your PubNub publish and subscribe keys
+Step 2 : Sign up for [PubNub](http://www.pubnub.com) subscription and get your PubNub publish and subscribe keys
 
 Step 3 : Make sure you have connected WiFi/Bluetooth Antenna to the Linkit One Board
 
@@ -140,8 +140,8 @@ Step 1 - Update the Firmware for the Linkit One by following this official link
 
 Step 2 : Perform the following steps to build and load the the application on LinkIt ONE 
 
-- Open the application [source code](linkitble/pubnub_linkit/pubnub_linkit.ino) using Arduino IDE
-- Open the [config header file](linkitble/pubnub_linkit/settings.h) and update your pubnub keys (pubkey and subkey), local WIFI Router SSID, password and auth type (WIFI_AP , WIFI_PASSWORD , WIFI_AUTH).
+- Open the application [source code](likitble/pubnub_linkit/pubnub_linkit.ino) using Arduino IDE
+- Open the [config header file](likitble/pubnub_linkit/settings.h) and update your pubnub keys (pubkey and subkey), local WIFI Router SSID, password and auth type (WIFI_AP , WIFI_PASSWORD , WIFI_AUTH).
 - Select Tools > Boards > Linkit One
 - Check for the debug port on the Windows Control Panel's Device Manager > COM Ports > COMxx(DEBUG)
 - To Upload the code, select the DEBUG COM Port at Tools > Port > (COMxx PORT)
