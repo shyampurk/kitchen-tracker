@@ -63,7 +63,7 @@ The Arduino IDE provides your coding environment and is used for monitoring the 
 
 Step 2: Download the USB COM port driver for the LinkIt ONE Development Board
 
-USB COM port driver is required for the LinkIt ONE SDK installation, can be downloaded from this [Link](download.labs.mediatek.com/mediatek_linkit_windows-com-port-driver.zip)
+USB COM port driver is required for the LinkIt ONE SDK installation. It can be downloaded from this [Link](http://download.labs.mediatek.com/mediatek_linkit_windows-com-port-driver.zip)
 
 		1.	Extract the content of the USB COM port driver zip file you downloaded.
 		2.	Run the installer InstallMTKUSBCOMPortDriver.exe and follow the instructions.
