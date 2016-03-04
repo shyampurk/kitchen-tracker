@@ -85,9 +85,10 @@ Step 3 - Open the manifest file and update the follwing entries
 
 Step 4 - Login to Bluemix console via cf tool and select the space.
 
-Step 5 - Change directory to the server application root (kitchen-tracker) under the cloned github repository.
+Step 5 - Change directory to the server application root (kitchen_tracker) under the cloned github repository.
 
-Step 6 - Run the following command to push the application code 
+Step 6 - Run the following command to push the application code to bluemix
 
 		'cf push' 
 
+Once successfully pushed, the aerver application will be automatically started. You can check its state in your bluemix dashboard and see that its state is set to 'Running'
