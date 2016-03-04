@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a model application to demonstrate how you can keep a track of your kitchen's inventory. By leveraging IoT, you can sense the weight of kitchen storage containers and hook them to the cloud which can enable smart decision making when it comes to tracking consmuption patterns and getting timely alerts for replenishment and expiry.
+This is a model application to demonstrate how you can keep a track of your kitchen's inventory. By leveraging IoT, you can sense the weight of kitchen storage containers and hook them to the cloud which can enable smart decision making when it comes to tracking consumption patterns and getting timely alerts for replenishment and expiry.
 
 ## Setup
 
