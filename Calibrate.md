@@ -3,7 +3,7 @@
 
 Step 1: Connect the Load Cells with the Arduino UNO as per the [Scematic](Schematic.png)
 
-Step 2: Power up Arduino UNO and open the calibration [source code](hardware/bleHM10/calibrate.ino) in Arduino IDE
+Step 2: Power up Arduino UNO and open the calibration [source code](hardware/calibrate/calibrate.ino) in Arduino IDE
 
 Step 3: Upload the program to the Arduino UNO
 
