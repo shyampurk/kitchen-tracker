@@ -93,11 +93,11 @@ Step 1 : Extract the firmware and tools from this [package](tools/BLE_HM10_Firmw
 	   		-- HMSoft.exe
 	 		-- HMSoft.bin
 
-Step 2 : For performing the firmware update, the BLE module hardware has to be connected to FTDI breakout board. Setup the Connection with HM-10 Module and FTDI Chip as follows
+Step 2 : For performing the firmware update, the BLE module hardware has to be connected to FTDI breakout board as per [this](FTDIandHM-10.png) schematic. Setup the Connection with HM-10 Module and FTDI Chip as follows
 
-	- Connect the HM-10 CC2541 BLE module to the FTDI Breakout Board as shown in the [schematic](FTDIandHM-10.png)
-	- Check the COM Port of the FTDI board connected to the PC on Device Manager
-	- If COM Port is not detected, upgrade the drivers using following link [FTDI Driver Link](http://www.ftdichip.com/Drivers/D2XX.htm). 
+	- Connect the HM-10 CC2541 BLE module to the FTDI Breakout Board. Connect FTDI to PC using USB. 
+	- Check the COM Port of the FTDI board connected to the PC on Windows Device Manager.
+	- If COM Port is not detected, upgrade the drivers using the link (http://www.ftdichip.com/Drivers/D2XX.htm) by downloading the driver according to the OS ( Windows , in this case). 
 	    
 
 Step 3 : Connect to HM-10 BLE module and set it up for firmware update as follows
@@ -105,9 +105,9 @@ Step 3 : Connect to HM-10 BLE module and set it up for firmware update as follow
 		- Launch the HMComAssistant.exe form the downloaded folder on your PC
 		- Select the COM Port on the HMComAssistant
 		- On HMComAssistant click Open Port
-		- Enter AT command on the text box and Click SEND button
+		- Enter AT command 'AT' on the text box and Click SEND button
 		- If HM-10 responds with OK then module connection is made correctly, if not check the connections made.
-		- To pull the module to upgrading mode, Send AT+SBLUP commad.
+		- To pull the module to upgrading mode, Send 'AT+SBLUP' commad.
 		- If module responds with OK+SBLUP, then we are ready to upgrade the firmware.
 
 Step 4 : Update firmware as follows
@@ -116,7 +116,7 @@ Step 4 : Update firmware as follows
 		- Select the firmware image from the downloaded folder [HMSoft.bin]
 		- Enter the right COM Port number on COM Port
 		- Click on Load Image button to start burning the firmware to the HM-10 BLE module
-		- Wait for the pop-up Download Completed Successfully
+		- Wait for the pop-up message 'Download Completed Successfully'
 
 ### Upgrade and Build Application Software:
 
