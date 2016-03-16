@@ -62,13 +62,13 @@ Step 2 - Click on Graph button below either of the container icon on the  main s
 <img src="/imgs/Screenshot-5.jpg" align="center" width="250" >
 
 
-## Tracking Expiry
+## Tracking Expiration
 
 Since most of the kitchen consumables have an expiry date, this application can help track that and notify the user if the inventory has expired. 
 
 Every time the containers are refilled, the expiry date is recalculated to be set on a future date, based on the container settings. The expiry value configured in the settings screen is for months.  So if the expiry value is set to 5, this means that the consumable stored in the container will expire 5 months from the the date when the setting is registered. If during this period the container is refilled again, the expiry is again recalculated from the date of refill and shifted in the future. 
 
-In order to test the app for expiry notification, we can redeploy the server application by making a small config change which will treat the expiry value to be in minutes ( instead of months). This way we can set the inventory to expire within a few minutes and quickly verify the functionality of the app.
+In order to test the app for expiration notification, we can redeploy the server application by making a small config change which will treat the expiry value to be in minutes ( instead of months). This way we can set the inventory to expire within a few minutes and quickly verify the functionality of the app.
 
 Perform the following steps to check for expiry.
 
@@ -79,7 +79,7 @@ Step 1 - Refer to the [deployment steps](Deploy.md). To set the expiry to be tri
           - expiry = 1
         - Save the file and redeploy the application on Bluemix 
         
-Step 2 - Once the server application starts running, perform the steps under "General Usage" section above to register the containers and their settings. Choose a value of 5 for the 'Expiry in months' parameter. Since we have now reconfigured the server to treat expiry in minutes, this will translate to an expiry of 5 minutes instead of 5 months.
+Step 2 - Once the server application starts running, perform the steps under "General Usage" section above to register the containers and their settings. Choose a value of 5 for the 'Expiry in months' parameter. Since we have now reconfigured the server to treat expiry in minutes, this will translate to an expiration of 5 minutes instead of 5 months.
 
 Step 3 - Refill the containers with some content and wait for 5 minutes
 
