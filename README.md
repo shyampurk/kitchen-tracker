@@ -14,7 +14,7 @@ The server application is hosted on [IBM Bluemix](http://www.ibm.com/cloud-compu
 
 The Mobile app is a cordova based android app used to track the inventory and provide some basic analytics. Refer this [link](AppBuild.md) for instructions on how to build the app.
 
-This application relies on [PubNub](www.pubnub.com) data stream network for the underlying messaging between the hardware, the server and mobile app. Ensure that the same set of PubNub keys are used across all the components while configuring and building the application software.  
+This application relies on [PubNub](http://www.pubnub.com) data stream network for the underlying messaging between the hardware, the server and mobile app. Ensure that the same set of PubNub keys are used across all the components while configuring and building the application software.  
 
 ## Usage
 
