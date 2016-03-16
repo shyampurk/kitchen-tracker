@@ -31,7 +31,7 @@ Step 1 - Once launched, the app screen will initially look like this.
 Step 2 - Click on the settings icon on the top to bring up the settings page.     
 <img src="/imgs/Screenshot-1.jpg" align="center" width="250" >
 
-Step 3 - Enter a label text to identify the container, and choose a value for the 'Threshold' and 'Expiry in months' parameter from the slider, and then press submit. The threshold value is used to decide the minimum weight of the container. If the container weight is below this threshold, a visual indication is provided to the user to inform him about the critical level of inventory. Expiry is used to track the expiry of inventory item kept in this container.  
+Step 3 - Enter a label text to identify the container, and choose a value for the 'Threshold' and 'Expiry in months' parameter from the slider, and then press submit. The threshold value is used to decide the minimum weight of the container. If the container weight is below this threshold, a visual indication is provided to the user to inform him about the critical level of inventory. Expiry is used to track the expiration of inventory item kept in this container.  
 
 Step 4 - Perform the above steps for the second container by selecting container ID 002 at the top of settings screen.Once submitted,  you will get a message indicating that the container settings have been registered. Both containers have to be registered separately.
 
@@ -41,7 +41,7 @@ Step 5 - Return back to the main screen and now you can see the container levels
 
 <img src="/imgs/Screenshot-3.jpg" align="center" width="250" >
 
-Step 6 - In order to simulate the consumption of inventory, you can choose to take out some portions of the stored consumable from the container. Alternatively, you can also choose to refill the container. Either ways, you will notice that the app screen is updated with the new container weigh figures and visual level indicator.
+Step 6 - In order to simulate the consumption of inventory, you can choose to take out some portions of the stored consumable from the container. Alternatively, you can also choose to refill the container. Either ways, you will notice that the app screen is updated with the new container weight value and visual level indicator.
 
 Step 7 - If you want to reconfigure the container ( with a different label and/or threshold & expiry validity) , you can press the Reset button on the settings screen, after selecting the container ID. Once done, repeat step 3 to re-register the container with the new settings. Now you can return to the main screen and keep repeating step 6, to monitor the inventory status on the app. 
 
