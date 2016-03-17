@@ -15,7 +15,8 @@ The list of hardware components for this project are as follows
 	-	Mediatek Linkit One HDK
 	-	FTDI USB to Serial Converter Module
 
-Refer to the [schematic diagram](Schematic.png) for the hardware setup and pin connections
+Refer to the [schematic diagram](Schematic.png) for the hardware setup and pin connections.
+Make sure to mount the load cells properly to be able to sense the weight measurement.
 
 ##Software Requirements :
 The following software and driver packages need to be installed in the build system. 
