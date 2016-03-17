@@ -102,19 +102,19 @@ Step 2 : For performing the firmware update, the BLE module hardware has to be c
 
 Step 3 : Connect to HM-10 BLE module and set it up for firmware update as follows
 
-		- Launch the HMComAssistant.exe form the downloaded folder on your PC
+		- Launch the HMComAssistant.exe from the downloaded folder on your PC
 		- Select the COM Port on the HMComAssistant
 		- On HMComAssistant click Open Port
 		- Enter AT command 'AT' on the text box and Click SEND button
 		- If HM-10 responds with OK then module connection is made correctly, if not check the connections made.
-		- To pull the module to upgrading mode, Send 'AT+SBLUP' commad.
+		- To switch the module to upgrading mode, Send 'AT+SBLUP' commad.
 		- If module responds with OK+SBLUP, then we are ready to upgrade the firmware.
 
-Step 4 : Update firmware as follows
+Step 4 : Upgrade firmware as follows
 
 		- Launch the HMSoft.exe executable file on the downloaded folder
 		- Select the firmware image from the downloaded folder [HMSoft.bin]
-		- Enter the right COM Port number on COM Port
+		- Enter the correct COM Port number for "COM Port" dropdown selection
 		- Click on Load Image button to start burning the firmware to the HM-10 BLE module
 		- Wait for the pop-up message 'Download Completed Successfully'
 
