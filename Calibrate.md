@@ -9,11 +9,11 @@ Step 3: Upload the program to the Arduino UNO
 
 Step 4:	Open the Serial Monitor on the Arduino IDE
 
-Step 5: Wait for sensor to calibrate and set initially to zero, then place a known weight of 1 KG on the both the sensors
+Step 5: Wait for sensor to calibrate and set initially to zero weight, then place a known weight of 1 KG on the both the sensors
 
 Step 6: Check for the weight to be in pounds
 
-Step 7: If the weight does not matches with 2.2 lbs, change the calibration values on line 21 & 22 of calibration source code and upload the program to the Arduino UNO until the weight attains 2.2 lbs repeat [Step 3 to Step 7]
+Step 7: If the weight does not match with 2.2 lbs (output through serial console), change the calibration values on line 21 & 22 of calibration source code and upload the program to the Arduino UNO until the weight attains 2.2 lbs ( by repeating Step 3 to Step 7)
 
 Step 8: Once the weight attains 2.2 lbs, note the calibration values, in the source code for both the sensor
 
