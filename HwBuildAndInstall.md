@@ -46,7 +46,7 @@ Step 1: Before proceeding with the software installation, make sure to disable d
 		- After restarting, click Troubleshoot -> Click Advanced Options -> Click Windows Startup Settings -> Click Restart
 		- After restarting your computer a second time, choose Disable driver signature enforcement from the list by typing the number 7 on your keyboard.Your computer will restart automatically.
 	
-Step 2: Once you disable Automatic Driver Installation on Windows OS. The automatic download and installation of device drivers can prevent proper installation of the LinkIt ONE USB COM port driver on Windows 7 machines. If you’ve already disabled the automatic installation of device drivers, you can skip this step, otherwise:
+Step 2: The automatic download and installation of device drivers can prevent proper installation of the LinkIt ONE USB COM port driver on Windows 7 machines. If you’ve already disabled the automatic installation of device drivers, you can skip this step, otherwise:
 
 	- Open Control Panel and search for and open "Change Device Installation Settings" dialog box.
 	- In the dialog box, select "No, let me choose what to do" option, then click "Never install driver software from Windows Update" option. 
