@@ -3,7 +3,7 @@
 ##Prerequisites
 
     - You should have a valid IBM account
-    - You should have a Bluemix subscription and access to your BLuemix dashboard with atleast one space created
+    - You should have a Bluemix subscription and access to your Bluemix dashboard with atleast one space created
     - You should have the cloudfoundry command line tool installed
     (https://github.com/cloudfoundry/cli/releases)
     - You should have a PubNub subscription
@@ -25,17 +25,16 @@ Step 3: Click on dashDB service icon and create a dashDB service instance for yo
 			5) Selected Plan - Choose 'Entry'.
 			6) Click CREATE to create the dashdb service instance.
 
-Step 4: After creation of the service, go back to dashboard 
-		You can see the dashDB service added to your space, click the service and click the launch button and you can see the dashDB home page.
+Step 4: After creation of the service, go back to dashboard.Now you can see the dashDB service added to your space. Click the service and click the launch button and you can see your newly created dashDB service home page.
 
-Step 5: In the Side Menu under the Connect -> Connection information, 
+Step 5: In the dashDB service home page, under the Side Menu, under the Connect -> Connection information, 
 		
-	You can see your dashDB Host name,Database name,user id,pwd.
+	You can see your dashDB Host name,Database name,user id and password.
 
         Make a note of Host Name, Port Number , Database Name, User ID and Password.
 
 Step 6: In the Side Main Menu click Tables,Here you can create the table for this application.
-		Click Add Table to create the table for kitchen tracking application by entering the below SQL stamement in the bottom text area.
+		Click 'Add Table' to create the table for kitchen tracking application by entering the below SQL stamement in the bottom text area.
 		
     CREATE TABLE "KITCHENTRACKERAPP" 
     (
