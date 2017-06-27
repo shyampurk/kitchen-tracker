@@ -16,22 +16,24 @@ Step 2: In your dashboard, goto Catalog and select the Data and Analytics Sectio
 			
 			You can see that the dashDB service will be listed under this section or you can search for dashDB 
 
-Step 3: Click on dashDB service icon and create a dashDB service instance for your space by filling following details,
+Step 3: Click on dashDB service icon and create a dashDB service instance for your space ,
 		
-			1) Space - Your space name where you want to add this service ( This might have been preselected if you have an existing space)
-    		2) App   - You can select "leave unbound"
-			3) Service name - Enter a name for the service of your choice
-			4) Credential name - Enter a name for the Credential of your choice
-			5) Selected Plan - Choose 'Entry'.
-			6) Click CREATE to create the dashdb service instance.
+			Service name - Enter a name for the service of your choice
+			Selected Plan - Choose 'Entry'.
 
-Step 4: After creation of the service, go back to dashboard.Now you can see the dashDB service added to your space. Click the service and click the launch button and you can see your newly created dashDB service home page.
+Click CREATE to create the dashdb service instance.
 
-Step 5: In the dashDB service home page, under the Side Menu, under the Connect -> Connection information, 
-		
-	You can see your dashDB Host name,Database name,user id and password.
+Step 4: After creation of the service, go back to dashboard.Now you can see the dashDB service added to your space. Click the service and select Service Credential in the side menu.
 
-        Make a note of Host Name, Port Number , Database Name, User ID and Password.
+Step 4.1: Click New Credential button to create service credential for the instance and copy the generated credentials to any file.
+
+			Credential name - Enter a name for the Credential of your choice
+
+You can see your dashDB Host name,Database name,user id and password.
+
+    		Make a note of Host Name, Port Number , Database Name, User ID and Password.
+
+Step 5: Now select Manage option in side menu and click the Open button , You can see your newly created dashDB service home page.
 
 Step 6: In the Side Main Menu click Tables,Here you can create the table for this application.
 		Click 'Add Table' to create the table for kitchen tracking application by entering the below SQL stamement in the bottom text area.
@@ -48,7 +50,7 @@ Step 6: In the Side Main Menu click Tables,Here you can create the table for thi
 
 
 Step 7: Then click the button "Run DDL".
-		You can see the newly created table by selecting your schema and table name. Your schema is same as your username as displayed in Connect > Connection Information menu.
+		You can see the newly created table by selecting your schema and table name. Your schema is same as your username as displayed in the generated Service Credential.
 
 
 ## Deploying the Application Server
