@@ -27,7 +27,7 @@ Click on dashDB service icon and create a dashDB service instance for your space
 Click CREATE to create the dashdb service instance.
 
 ### Step 4: 
-After creation of the service, go back to dashboard.Now you can see the dashDB service added to your space. Click the service and select Service Credential in the side menu.
+After creation of the service, go back to dashboard.Now you can see the dashDB service added to your space. Click the service and select <strong>Service Credential</strong> in the side menu.
 
 ### Step 4.1: 
 Click New Credential button to create service credential for the instance and copy the generated credentials to any file.
@@ -39,12 +39,12 @@ You can see your dashDB Host name,Database name,user id and password.
     	Make a note of Host Name, Port Number , Database Name, User ID and Password.
 
 ### Step 5: 
-Now select Manage option in side menu and click the Open button , You can see your newly created dashDB service home page.
+Now select <strong>Manage</strong> option in side menu and click the <strong>Open</strong> button , You can see your newly created dashDB service home page.
 
 ### Step 6: 
-In the Side Main Menu click Tables,Here you can create the table for this application.
+In the Side Main Menu click <strong>Tables</strong>,Here you can create the table for this application.
 
-Click 'Add Table' to create the table for kitchen tracking application by entering the below SQL stamement in the bottom text area.
+Click <strong>'Add Table'</strong> to create the table for kitchen tracking application by entering the below SQL stamement in the bottom text area.
 		
     CREATE TABLE "KITCHENTRACKERAPP" 
     (
@@ -58,7 +58,7 @@ Click 'Add Table' to create the table for kitchen tracking application by enteri
 
 
 ### Step 7: 
-Then click the button "Run DDL".
+Then click the button <strong>"Run DDL"</strong>.
 
 You can see the newly created table by selecting your schema and table name. Your schema is same as your username as displayed in the generated Service Credential.
 
@@ -98,7 +98,7 @@ Open the [manifest file](https://github.com/shyampurk/kitchen-tracker/blob/maste
 
 
 ### Step 4 : 
-Login to Bluemix console via cf tool and select the space.
+Login to Bluemix console via <strong>cf</strong> tool and select the space.
 
 ### Step 5 : 
 Change directory to the server application root (kitchen_tracker) under the cloned github repository.
