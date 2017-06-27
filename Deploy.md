@@ -1,6 +1,6 @@
 # Deployment on IBM Bluemix
 
-##Prerequisites
+## Prerequisites
 
     - You should have a valid IBM account
     - You should have a Bluemix subscription and access to your Bluemix dashboard with atleast one space created
@@ -10,33 +10,41 @@
 
 ## Deploying DashDB Service
 
-Step 1: Login to Bluemix with your credentials.
+### Step 1: 
+Login to Bluemix with your credentials.
 
-Step 2: In your dashboard, goto Catalog and select the Data and Analytics Section
+### Step 2: 
+In your dashboard, goto Catalog and select the Data and Analytics Section
 			
-			You can see that the dashDB service will be listed under this section or you can search for dashDB 
+	You can see that the dashDB service will be listed under this section or you can search for dashDB 
 
-Step 3: Click on dashDB service icon and create a dashDB service instance for your space ,
+### Step 3: 
+Click on dashDB service icon and create a dashDB service instance for your space ,
 		
-			Service name - Enter a name for the service of your choice
-			Selected Plan - Choose 'Entry'.
+	Service name - Enter a name for the service of your choice
+	Selected Plan - Choose 'Entry'.
 
 Click CREATE to create the dashdb service instance.
 
-Step 4: After creation of the service, go back to dashboard.Now you can see the dashDB service added to your space. Click the service and select Service Credential in the side menu.
+### Step 4: 
+After creation of the service, go back to dashboard.Now you can see the dashDB service added to your space. Click the service and select Service Credential in the side menu.
 
-Step 4.1: Click New Credential button to create service credential for the instance and copy the generated credentials to any file.
+### Step 4.1: 
+Click New Credential button to create service credential for the instance and copy the generated credentials to any file.
 
-			Credential name - Enter a name for the Credential of your choice
+	Credential name - Enter a name for the Credential of your choice
 
 You can see your dashDB Host name,Database name,user id and password.
 
-    		Make a note of Host Name, Port Number , Database Name, User ID and Password.
+    	Make a note of Host Name, Port Number , Database Name, User ID and Password.
 
-Step 5: Now select Manage option in side menu and click the Open button , You can see your newly created dashDB service home page.
+### Step 5: 
+Now select Manage option in side menu and click the Open button , You can see your newly created dashDB service home page.
 
-Step 6: In the Side Main Menu click Tables,Here you can create the table for this application.
-		Click 'Add Table' to create the table for kitchen tracking application by entering the below SQL stamement in the bottom text area.
+### Step 6: 
+In the Side Main Menu click Tables,Here you can create the table for this application.
+
+Click 'Add Table' to create the table for kitchen tracking application by entering the below SQL stamement in the bottom text area.
 		
     CREATE TABLE "KITCHENTRACKERAPP" 
     (
@@ -49,15 +57,19 @@ Step 6: In the Side Main Menu click Tables,Here you can create the table for thi
 
 
 
-Step 7: Then click the button "Run DDL".
-		You can see the newly created table by selecting your schema and table name. Your schema is same as your username as displayed in the generated Service Credential.
+### Step 7: 
+Then click the button "Run DDL".
+
+You can see the newly created table by selecting your schema and table name. Your schema is same as your username as displayed in the generated Service Credential.
 
 
 ## Deploying the Application Server
 
-Step 1 - Clone this github repository
+### Step 1 : 
+Clone this github repository
 
-Step 2 - Update the parameters in the [config.ini](kitchen_tracker/config.ini)
+### Step 2 : 
+Update the parameters in the [config.ini](kitchen_tracker/config.ini)
 
 	pub_key = PubNub Publish Key
 	sub_key = PubNub Subscribe Key
@@ -71,9 +83,10 @@ Step 2 - Update the parameters in the [config.ini](kitchen_tracker/config.ini)
 	expiry = 0 ( Leave it to default value of zero)
 	
 
-Step 3 - Open the [manifest file](https://github.com/shyampurk/kitchen-tracker/blob/master/kitchen_tracker/manifest.yml) and update the follwing entries
+### Step 3 : 
+Open the [manifest file](https://github.com/shyampurk/kitchen-tracker/blob/master/kitchen_tracker/manifest.yml) and update the follwing entries
 
-		applicationa:
+		applications:
 			- name : <name of the application on server>
 	
 		services
@@ -84,11 +97,14 @@ Step 3 - Open the [manifest file](https://github.com/shyampurk/kitchen-tracker/b
 			<dashdb instance name> - name of the dashdb service instance that you have created in the previous section.
 
 
-Step 4 - Login to Bluemix console via cf tool and select the space.
+### Step 4 : 
+Login to Bluemix console via cf tool and select the space.
 
-Step 5 - Change directory to the server application root (kitchen_tracker) under the cloned github repository.
+### Step 5 : 
+Change directory to the server application root (kitchen_tracker) under the cloned github repository.
 
-Step 6 - Run the following command to push the application code to bluemix
+### Step 6 : 
+Run the following command to push the application code to bluemix
 
 		'cf push' 
 
